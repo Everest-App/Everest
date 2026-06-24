@@ -1,0 +1,132 @@
+{
+  "name": "api-platform-desktop",
+  "version": "2.2.1",
+  "author": "API Platform Team",
+  "description": "Everest API Testing Platform",
+  "main": "dist/main/main/main.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:renderer\" \"npm run dev:main\"",
+    "dev:renderer": "vite",
+    "dev:main": "wait-on http://localhost:5173 && tsc -p tsconfig.main.json && electron .",
+    "build:renderer": "vite build",
+    "build:main": "tsc -p tsconfig.main.json",
+    "build:copy-assets": "mkdir -p dist/migrations && cp src/main/storage/migrations/*.sql dist/migrations/",
+    "build:clean": "rm -rf dist",
+    "build": "npm run build:clean && npm run build:renderer && npm run build:main && npm run build:copy-assets",
+    "package": "npm run build && electron-builder --mac --win",
+    "package:mac": "npm run build && electron-builder --mac",
+    "package:win": "npm run build && electron-builder --win",
+    "lint": "tsc --noEmit -p tsconfig.main.json && tsc --noEmit -p tsconfig.renderer.json"
+  },
+  "dependencies": {
+    "@api-platform/core": "*",
+    "axios": "^1.17.0",
+    "form-data": "^4.0.5",
+    "i18next": "^26.3.1",
+    "react-i18next": "^17.0.8",
+    "sql.js": "^1.14.1",
+    "uuid": "^14.0.0",
+    "ws": "^8.21.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@types/uuid": "^11.0.0",
+    "@types/ws": "^8.18.1",
+    "@vitejs/plugin-react": "^6.0.2",
+    "concurrently": "^10.0.3",
+    "electron": "^42.4.0",
+    "electron-builder": "^26.15.2",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "terser": "^5.48.0",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.16",
+    "wait-on": "^9.0.10",
+    "zustand": "^5.0.14"
+  },
+  "build": {
+    "appId": "com.apiplatform.app",
+    "productName": "Everest",
+    "electronVersion": "42.4.0",
+    "asar": true,
+    "compression": "maximum",
+    "removePackageScripts": true,
+    "files": [
+      "dist/**/*",
+      "!dist/**/*.map",
+      "!dist/**/*.d.ts",
+      "!dist/**/*.d.ts.map",
+      "!dist/**/*.test.*",
+      "!dist/**/*.spec.*",
+      "!dist/**/__tests__/**",
+      "!dist/builder-effective-config.yaml",
+      "!dist/mac*",
+      "!dist/win*",
+      "!dist/*.dmg",
+      "!dist/*.exe",
+      "!dist/*.blockmap",
+      "!**/node_modules/*/{CHANGELOG,README,LICENSE,license,changelog,readme}*",
+      "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}/**",
+      "!**/node_modules/**/*.{md,ts,map,d.ts}",
+      "!**/node_modules/.cache/**"
+    ],
+    "extraResources": [
+      {
+        "from": "../../node_modules/sql.js/dist/sql-wasm.wasm",
+        "to": "sql-wasm.wasm"
+      }
+    ],
+    "nodeGypRebuild": false,
+    "npmRebuild": false,
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "category": "public.app-category.developer-tools",
+      "icon": "resources/icon.icns",
+      "artifactName": "${productName}-${version}-${arch}.${ext}",
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "resources/icon.ico",
+      "artifactName": "${productName}-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    }
+  }
+}

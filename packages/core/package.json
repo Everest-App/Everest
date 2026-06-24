@@ -1,0 +1,32 @@
+{
+  "name": "@api-platform/core",
+  "version": "2.2.1",
+  "description": "Core types, constants, and utilities for the API Platform",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/esm/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "default": "./dist/cjs/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig.cjs.json",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "api",
+    "platform",
+    "core",
+    "types"
+  ],
+  "author": "API Platform Team",
+  "license": "MIT"
+}
