@@ -1,0 +1,79 @@
+.py-5 {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+.mb-5 {
+  margin-bottom: 4rem;
+}
+
+.mb-2 {
+  margin-bottom: 1rem;
+}
+
+.timeline {
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 24px;
+  width: 2px;
+  background-color: var(--color-border);
+}
+
+.timeline-item {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.timeline-item:last-child {
+  margin-bottom: 0;
+}
+
+.timeline-icon {
+  width: 50px;
+  height: 50px;
+  background-color: var(--color-bg-primary);
+  border: 2px solid var(--color-accent);
+  color: var(--color-accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.timeline-content {
+  flex: 1;
+}
+
+.timeline-content h3 {
+  margin-bottom: 0.75rem;
+}
+
+.timeline-content p {
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+  .timeline::before {
+    left: 20px;
+  }
+  .timeline-icon {
+    width: 40px;
+    height: 40px;
+  }
+  .timeline-item {
+    gap: 1rem;
+  }
+}

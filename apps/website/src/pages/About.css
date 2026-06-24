@@ -1,0 +1,55 @@
+.about-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.about-section h2 {
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+}
+
+.about-section p {
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+  margin-bottom: 1rem;
+  font-size: 1.125rem;
+}
+
+.about-section ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 1rem;
+}
+
+.about-section li {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+.about-section li strong {
+  color: var(--color-text-primary);
+}
+
+.mission-section {
+  text-align: center;
+  padding: 3rem;
+  margin-top: 2rem;
+}
+
+.mission-section h2 {
+  font-size: 1.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted);
+  margin-bottom: 1.5rem;
+}
+
+.mission-statement {
+  font-size: 1.75rem !important;
+  font-weight: 700;
+  font-family: var(--font-display);
+  line-height: 1.4 !important;
+  margin: 0 !important;
+}

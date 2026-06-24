@@ -1,0 +1,58 @@
+.releases-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.release-card {
+  padding: 2rem;
+}
+
+.release-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.release-header h2 {
+  margin: 0;
+  font-size: 1.75rem;
+}
+
+.release-date {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+.release-section {
+  margin-bottom: 1.5rem;
+}
+
+.release-section:last-child {
+  margin-bottom: 0;
+}
+
+.release-section h4 {
+  font-size: 1.125rem;
+  margin-bottom: 0.75rem;
+}
+
+.release-section ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  color: var(--color-text-secondary);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.text-info {
+  color: #3b82f6;
+}
+
+.text-warning {
+  color: #f59e0b;
+}
