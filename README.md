@@ -87,8 +87,8 @@ Make sure you have Node.js (v18+ recommended) and npm installed on your machine.
 ### Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/YourOrg/YourRepo.git
-   cd YourRepo
+   git clone https://github.com/Everest-App/Everest.git
+   cd Everest
    ```
 2. Install all monorepo dependencies:
    ```bash
