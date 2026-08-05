@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useDebouncedValue } from '../../hooks/useSearch';
 import { searchCollections, buildTree, MatchedCollectionItem, MatchedCollection } from '../../utils/search-utils';
 import { HighlightedText } from '../common/HighlightedText';
+import { SFIcon } from '../common/SFIcon';
 
 interface CollectionPanelProps {
     onRunCollection?: (collectionId: string) => void;
@@ -298,8 +299,8 @@ export function CollectionPanel({ onRunCollection, onRunFolder }: CollectionPane
                         onDragLeave={handleDragLeave}
                         onDrop={(e) => handleDrop(e, item, siblings)}
                     >
-                        <span className="collection-icon">{isExpanded ? '▾' : '▸'}</span>
-                        <span className="collection-icon">📁</span>
+                        <span className="collection-icon"><SFIcon name={isExpanded ? "chevron.down" : "chevron.right"} size={10} /></span>
+                        <span className="collection-icon"><SFIcon name="folder.fill" size={12} /></span>
                         {isEditing ? (
                             <input
                                 ref={renameInputRef}
@@ -323,12 +324,12 @@ export function CollectionPanel({ onRunCollection, onRunFolder }: CollectionPane
                         )}
                         <div className="collection-item-actions">
                             {onRunFolder && (
-                                <button className="collection-play-btn" onClick={(e) => { e.stopPropagation(); onRunFolder(item.collectionId, item.id, item.name); }} title={t('collection.runFolder', { defaultValue: 'Run Folder' })}>▶</button>
+                                <button className="collection-play-btn" onClick={(e) => { e.stopPropagation(); onRunFolder(item.collectionId, item.id, item.name); }} title={t('collection.runFolder', { defaultValue: 'Run Folder' })}><SFIcon name="play.fill" size={10} /></button>
                             )}
-                            <button onClick={(e) => { e.stopPropagation(); handleAddRequest(item.collectionId, item.id); }} title={t('collection.addRequest')}>+R</button>
-                            <button onClick={(e) => { e.stopPropagation(); handleAddFolder(item.collectionId, item.id); }} title={t('collection.addFolder')}>+F</button>
-                            <button onClick={(e) => { e.stopPropagation(); startRename(item.id, item.name); }} title={t('common.rename', { defaultValue: 'Rename' })}>✎</button>
-                            <button onClick={(e) => { e.stopPropagation(); deleteItem(item.id); }} title={t('common.delete')}>×</button>
+                            <button onClick={(e) => { e.stopPropagation(); handleAddRequest(item.collectionId, item.id); }} title={t('collection.addRequest')}><SFIcon name="plus" size={11} /></button>
+                            <button onClick={(e) => { e.stopPropagation(); handleAddFolder(item.collectionId, item.id); }} title={t('collection.addFolder')}><SFIcon name="folder.fill" size={11} /></button>
+                            <button onClick={(e) => { e.stopPropagation(); startRename(item.id, item.name); }} title={t('common.rename', { defaultValue: 'Rename' })}><SFIcon name="pencil" size={11} /></button>
+                            <button onClick={(e) => { e.stopPropagation(); deleteItem(item.id); }} title={t('common.delete')}><SFIcon name="xmark" size={11} /></button>
                         </div>
                     </div>
                     {isExpanded && item.children?.map(child => renderItem(child, depth + 1, item.children || []))}
@@ -409,16 +410,16 @@ export function CollectionPanel({ onRunCollection, onRunFolder }: CollectionPane
                         style={{ paddingInlineStart: 12 + depth * 16 }}
                         onClick={() => toggleFolder(item.id)}
                     >
-                        <span className="collection-icon">▾</span>
-                        <span className="collection-icon">📁</span>
+                        <span className="collection-icon"><SFIcon name="chevron.down" size={10} /></span>
+                        <span className="collection-icon"><SFIcon name="folder.fill" size={12} /></span>
                         <HighlightedText text={item.name} query={query} className="collection-item-name" />
                         <div className="collection-item-actions">
                             {onRunFolder && (
-                                <button className="collection-play-btn" onClick={(e) => { e.stopPropagation(); onRunFolder(item.collectionId, item.id, item.name); }} title={t('collection.runFolder', { defaultValue: 'Run Folder' })}>▶</button>
+                                <button className="collection-play-btn" onClick={(e) => { e.stopPropagation(); onRunFolder(item.collectionId, item.id, item.name); }} title={t('collection.runFolder', { defaultValue: 'Run Folder' })}><SFIcon name="play.fill" size={10} /></button>
                             )}
-                            <button onClick={(e) => { e.stopPropagation(); handleAddRequest(item.collectionId, item.id); }} title={t('collection.addRequest')}>+R</button>
-                            <button onClick={(e) => { e.stopPropagation(); handleAddFolder(item.collectionId, item.id); }} title={t('collection.addFolder')}>+F</button>
-                            <button onClick={(e) => { e.stopPropagation(); deleteItem(item.id); }} title={t('common.delete')}>×</button>
+                            <button onClick={(e) => { e.stopPropagation(); handleAddRequest(item.collectionId, item.id); }} title={t('collection.addRequest')}><SFIcon name="plus" size={11} /></button>
+                            <button onClick={(e) => { e.stopPropagation(); handleAddFolder(item.collectionId, item.id); }} title={t('collection.addFolder')}><SFIcon name="folder.fill" size={11} /></button>
+                            <button onClick={(e) => { e.stopPropagation(); deleteItem(item.id); }} title={t('common.delete')}><SFIcon name="xmark" size={11} /></button>
                         </div>
                     </div>
                     {item.matchedChildren?.map(child => renderSearchItem(child as MatchedCollectionItem, depth + 1, query))}
@@ -521,7 +522,7 @@ export function CollectionPanel({ onRunCollection, onRunFolder }: CollectionPane
 
             {!loading && collections.length === 0 && !showCreate && (
                 <div className="empty-state" style={{ height: 150 }}>
-                    <div className="empty-state-icon">📁</div>
+                    <div className="empty-state-icon"><SFIcon name="folder.fill" size={28} /></div>
                     <div className="empty-state-text">{t('collection.noCollections')}</div>
                     <div className="empty-state-sub">{t('collection.createToOrganize')}</div>
                 </div>
@@ -539,17 +540,17 @@ export function CollectionPanel({ onRunCollection, onRunFolder }: CollectionPane
                 searchResults.map(({ collection: col, matchedItems }) => (
                     <div key={col.id} className="collection-group">
                         <div className="collection-header" onClick={() => toggleFolder(col.id)}>
-                            <span className="collection-icon">▾</span>
-                            <span className="collection-icon">📦</span>
+                            <span className="collection-icon"><SFIcon name="chevron.down" size={10} /></span>
+                            <span className="collection-icon"><SFIcon name="shippingbox.fill" size={12} /></span>
                             <HighlightedText text={col.name} query={debouncedQuery} className="collection-header-name" />
                             <div className="collection-item-actions">
                                 {onRunCollection && (
-                                    <button className="collection-play-btn" onClick={(e) => { e.stopPropagation(); onRunCollection(col.id); }} title={t('collection.runCollection')}>▶</button>
+                                    <button className="collection-play-btn" onClick={(e) => { e.stopPropagation(); onRunCollection(col.id); }} title={t('collection.runCollection')}><SFIcon name="play.fill" size={10} /></button>
                                 )}
-                                <button onClick={(e) => { e.stopPropagation(); handleAddRequest(col.id, null); }} title={t('collection.addRequest')}>+R</button>
-                                <button onClick={(e) => { e.stopPropagation(); handleAddFolder(col.id, null); }} title={t('collection.addFolder')}>+F</button>
-                                <button onClick={(e) => { e.stopPropagation(); duplicateCollection(col.id); }} title={t('collection.duplicate')}>⧉</button>
-                                <button onClick={(e) => { e.stopPropagation(); deleteCollection(col.id); }} title={t('common.delete')}>×</button>
+                                <button onClick={(e) => { e.stopPropagation(); handleAddRequest(col.id, null); }} title={t('collection.addRequest')}><SFIcon name="plus" size={11} /></button>
+                                <button onClick={(e) => { e.stopPropagation(); handleAddFolder(col.id, null); }} title={t('collection.addFolder')}><SFIcon name="folder.fill" size={11} /></button>
+                                <button onClick={(e) => { e.stopPropagation(); duplicateCollection(col.id); }} title={t('collection.duplicate')}><SFIcon name="doc.on.doc" size={11} /></button>
+                                <button onClick={(e) => { e.stopPropagation(); deleteCollection(col.id); }} title={t('common.delete')}><SFIcon name="xmark" size={11} /></button>
                             </div>
                         </div>
                         {matchedItems.map(item => renderSearchItem(item, 0, debouncedQuery))}
@@ -571,8 +572,8 @@ export function CollectionPanel({ onRunCollection, onRunFolder }: CollectionPane
                                 onDragLeave={() => { setDragOverId(null); setDropPosition(null); }}
                                 onDrop={(e) => handleDropOnCollection(e, col.id, tree)}
                             >
-                                <span className="collection-icon">{isExpanded ? '▾' : '▸'}</span>
-                                <span className="collection-icon">📦</span>
+                                <span className="collection-icon"><SFIcon name={isExpanded ? "chevron.down" : "chevron.right"} size={10} /></span>
+                                <span className="collection-icon"><SFIcon name="shippingbox.fill" size={12} /></span>
                                 {isEditingCol ? (
                                     <input
                                         ref={renameInputRef}
@@ -594,15 +595,15 @@ export function CollectionPanel({ onRunCollection, onRunFolder }: CollectionPane
                                         {col.name}
                                     </span>
                                 )}
-                                <div className="collection-item-actions">
+                                 <div className="collection-item-actions">
                                     {onRunCollection && (
-                                        <button className="collection-play-btn" onClick={(e) => { e.stopPropagation(); onRunCollection(col.id); }} title={t('collection.runCollection')}>▶</button>
+                                        <button className="collection-play-btn" onClick={(e) => { e.stopPropagation(); onRunCollection(col.id); }} title={t('collection.runCollection')}><SFIcon name="play.fill" size={10} /></button>
                                     )}
-                                    <button onClick={(e) => { e.stopPropagation(); handleAddRequest(col.id, null); }} title={t('collection.addRequest')}>+R</button>
-                                    <button onClick={(e) => { e.stopPropagation(); handleAddFolder(col.id, null); }} title={t('collection.addFolder')}>+F</button>
-                                    <button onClick={(e) => { e.stopPropagation(); startRename(col.id, col.name, col.id); }} title={t('common.rename', { defaultValue: 'Rename' })}>✎</button>
-                                    <button onClick={(e) => { e.stopPropagation(); duplicateCollection(col.id); }} title={t('collection.duplicate')}>⧉</button>
-                                    <button onClick={(e) => { e.stopPropagation(); deleteCollection(col.id); }} title={t('common.delete')}>×</button>
+                                    <button onClick={(e) => { e.stopPropagation(); handleAddRequest(col.id, null); }} title={t('collection.addRequest')}><SFIcon name="plus" size={11} /></button>
+                                    <button onClick={(e) => { e.stopPropagation(); handleAddFolder(col.id, null); }} title={t('collection.addFolder')}><SFIcon name="folder.fill" size={11} /></button>
+                                    <button onClick={(e) => { e.stopPropagation(); startRename(col.id, col.name, col.id); }} title={t('common.rename', { defaultValue: 'Rename' })}><SFIcon name="pencil" size={11} /></button>
+                                    <button onClick={(e) => { e.stopPropagation(); duplicateCollection(col.id); }} title={t('collection.duplicate')}><SFIcon name="doc.on.doc" size={11} /></button>
+                                    <button onClick={(e) => { e.stopPropagation(); deleteCollection(col.id); }} title={t('common.delete')}><SFIcon name="xmark" size={11} /></button>
                                 </div>
                             </div>
                             {isExpanded && tree.map(item => renderItem(item, 0, tree))}
@@ -622,22 +623,22 @@ export function CollectionPanel({ onRunCollection, onRunFolder }: CollectionPane
                         <>
                             <div className="collection-context-menu-item"
                                 onClick={() => startRename(contextMenu.item!.id, contextMenu.item!.name)}>
-                                ✎ {t('common.rename', { defaultValue: 'Rename' })}
+                                <SFIcon name="pencil" size={11} style={{ marginRight: 6 }} /> {t('common.rename', { defaultValue: 'Rename' })}
                             </div>
                             {contextMenu.item.type === 'folder' && (
                                 <>
                                     <div className="collection-context-menu-item"
                                         onClick={() => handleAddRequest(contextMenu.item!.collectionId, contextMenu.item!.id)}>
-                                        + {t('collection.addRequest', { defaultValue: 'Add Request' })}
+                                        <SFIcon name="plus" size={11} style={{ marginRight: 6 }} /> {t('collection.addRequest', { defaultValue: 'Add Request' })}
                                     </div>
                                     <div className="collection-context-menu-item"
                                         onClick={() => handleAddFolder(contextMenu.item!.collectionId, contextMenu.item!.id)}>
-                                        + {t('collection.addFolder', { defaultValue: 'Add Folder' })}
+                                        <SFIcon name="folder.fill" size={11} style={{ marginRight: 6 }} /> {t('collection.addFolder', { defaultValue: 'Add Folder' })}
                                     </div>
                                     {onRunFolder && (
                                         <div className="collection-context-menu-item"
                                             onClick={() => onRunFolder(contextMenu.item!.collectionId, contextMenu.item!.id, contextMenu.item!.name)}>
-                                            ▶ {t('collection.runFolder', { defaultValue: 'Run Folder' })}
+                                            <SFIcon name="play.fill" size={10} style={{ marginRight: 6 }} /> {t('collection.runFolder', { defaultValue: 'Run Folder' })}
                                         </div>
                                     )}
                                 </>
@@ -645,7 +646,7 @@ export function CollectionPanel({ onRunCollection, onRunFolder }: CollectionPane
                             <div className="collection-context-menu-divider" />
                             <div className="collection-context-menu-item danger"
                                 onClick={() => deleteItem(contextMenu.item!.id)}>
-                                × {t('common.delete', { defaultValue: 'Delete' })}
+                                <SFIcon name="xmark" size={11} style={{ marginRight: 6 }} /> {t('common.delete', { defaultValue: 'Delete' })}
                             </div>
                         </>
                     )}
@@ -653,30 +654,30 @@ export function CollectionPanel({ onRunCollection, onRunFolder }: CollectionPane
                         <>
                             <div className="collection-context-menu-item"
                                 onClick={() => startRename(contextMenu.collection!.id, contextMenu.collection!.name, contextMenu.collection!.id)}>
-                                ✎ {t('common.rename', { defaultValue: 'Rename' })}
+                                <SFIcon name="pencil" size={11} style={{ marginRight: 6 }} /> {t('common.rename', { defaultValue: 'Rename' })}
                             </div>
                             <div className="collection-context-menu-item"
                                 onClick={() => handleAddRequest(contextMenu.collection!.id, null)}>
-                                + {t('collection.addRequest', { defaultValue: 'Add Request' })}
+                                <SFIcon name="plus" size={11} style={{ marginRight: 6 }} /> {t('collection.addRequest', { defaultValue: 'Add Request' })}
                             </div>
                             <div className="collection-context-menu-item"
                                 onClick={() => handleAddFolder(contextMenu.collection!.id, null)}>
-                                + {t('collection.addFolder', { defaultValue: 'Add Folder' })}
+                                <SFIcon name="folder.fill" size={11} style={{ marginRight: 6 }} /> {t('collection.addFolder', { defaultValue: 'Add Folder' })}
                             </div>
                             <div className="collection-context-menu-item"
                                 onClick={() => duplicateCollection(contextMenu.collection!.id)}>
-                                ⧉ {t('collection.duplicate', { defaultValue: 'Duplicate' })}
+                                <SFIcon name="doc.on.doc" size={11} style={{ marginRight: 6 }} /> {t('collection.duplicate', { defaultValue: 'Duplicate' })}
                             </div>
                             {onRunCollection && (
                                 <div className="collection-context-menu-item"
                                     onClick={() => onRunCollection(contextMenu.collection!.id)}>
-                                    ▶ {t('collection.runCollection', { defaultValue: 'Run Collection' })}
+                                    <SFIcon name="play.fill" size={10} style={{ marginRight: 6 }} /> {t('collection.runCollection', { defaultValue: 'Run Collection' })}
                                 </div>
                             )}
                             <div className="collection-context-menu-divider" />
                             <div className="collection-context-menu-item danger"
                                 onClick={() => deleteCollection(contextMenu.collection!.id)}>
-                                × {t('common.delete', { defaultValue: 'Delete' })}
+                                <SFIcon name="xmark" size={11} style={{ marginRight: 6 }} /> {t('common.delete', { defaultValue: 'Delete' })}
                             </div>
                         </>
                     )}

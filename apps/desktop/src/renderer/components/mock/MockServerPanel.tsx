@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { MockRoute, MockServerStatus, MockRequestLog } from '@api-platform/core';
+import { SFIcon } from '../common/SFIcon';
 
 const METHOD_COLORS: Record<string, string> = {
     GET: 'var(--method-get)', POST: 'var(--method-post)', PUT: 'var(--method-put)',
@@ -102,7 +103,7 @@ export function MockServerPanel() {
                             onClick={handleStop}>Stop</button>
                     ) : (
                         <button className="send-btn" style={{ padding: '4px 16px' }}
-                            onClick={handleStart} disabled={routes.length === 0}>▶ Start</button>
+                            onClick={handleStart} disabled={routes.length === 0}><SFIcon name="play.fill" size={11} style={{ marginRight: 4 }} /> Start</button>
                     )}
                 </div>
             </div>
@@ -155,10 +156,10 @@ export function MockServerPanel() {
                                     }} />
                                 <button className="toolbar-btn" style={{ fontSize: 10 }}
                                     onClick={() => setEditingRoute(editingRoute === route.id ? null : route.id)}>
-                                    {editingRoute === route.id ? '▾' : '▸'}
+                                    <SFIcon name={editingRoute === route.id ? "chevron.down" : "chevron.right"} size={9} />
                                 </button>
                                 <button className="toolbar-btn" style={{ fontSize: 10, color: 'var(--method-delete)' }}
-                                    onClick={() => removeRoute(route.id)}>✕</button>
+                                    onClick={() => removeRoute(route.id)}><SFIcon name="xmark" size={10} /></button>
                             </div>
 
                             {editingRoute === route.id && (

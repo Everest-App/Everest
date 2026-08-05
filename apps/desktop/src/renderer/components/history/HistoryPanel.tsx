@@ -2,6 +2,7 @@ import React, { useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistoryStore } from '../../store/history-store';
 import { useTabStore } from '../../store/tab-store';
+import { SFIcon } from '../common/SFIcon';
 
 const METHOD_COLORS: Record<string, string> = {
     GET: 'var(--method-get)',
@@ -81,7 +82,7 @@ export function HistoryPanel() {
 
             {!loading && entries.length === 0 && (
                 <div className="empty-state" style={{ height: 150 }}>
-                    <div className="empty-state-icon">📋</div>
+                    <div className="empty-state-icon"><SFIcon name="clock.fill" size={28} /></div>
                     <div className="empty-state-text">{t('history.noHistory')}</div>
                     <div className="empty-state-sub">{t('history.sendToSee')}</div>
                 </div>

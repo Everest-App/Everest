@@ -13,15 +13,15 @@
     "build:copy-assets": "mkdir -p dist/migrations && cp src/main/storage/migrations/*.sql dist/migrations/",
     "build:clean": "rm -rf dist",
     "build": "npm run build:clean && npm run build:renderer && npm run build:main && npm run build:copy-assets",
-    "package": "npm run build && electron-builder --mac --win",
+    "package": "npm run build && electron-builder --mac --win --linux",
     "package:mac": "npm run build && electron-builder --mac",
     "package:win": "npm run build && electron-builder --win",
+    "package:linux": "npm run build && electron-builder --linux",
     "lint": "tsc --noEmit -p tsconfig.main.json && tsc --noEmit -p tsconfig.renderer.json"
   },
   "dependencies": {
     "@api-platform/core": "*",
     "axios": "^1.17.0",
-    "form-data": "^4.0.5",
     "i18next": "^26.3.1",
     "react-i18next": "^17.0.8",
     "sql.js": "^1.14.1",
@@ -69,7 +69,10 @@
       "!**/node_modules/*/{CHANGELOG,README,LICENSE,license,changelog,readme}*",
       "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}/**",
       "!**/node_modules/**/*.{md,ts,map,d.ts}",
-      "!**/node_modules/.cache/**"
+      "!**/node_modules/.cache/**",
+      "!**/node_modules/sql.js/dist/sql-asm*",
+      "!**/node_modules/sql.js/dist/worker*",
+      "!**/node_modules/sql.js/dist/*debug*"
     ],
     "extraResources": [
       {
@@ -106,6 +109,14 @@
       ],
       "icon": "resources/icon.ico",
       "artifactName": "${productName}-Setup-${version}.${ext}"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Development",
+      "icon": "resources/icon.png"
     },
     "nsis": {
       "oneClick": false,

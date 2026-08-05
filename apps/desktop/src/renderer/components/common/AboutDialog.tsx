@@ -1,4 +1,5 @@
 import React from 'react';
+import { SFIcon } from './SFIcon';
 import { version } from '../../../../package.json';
 
 interface AboutDialogProps {
@@ -7,36 +8,37 @@ interface AboutDialogProps {
 
 export const AboutDialog: React.FC<AboutDialogProps> = ({ onClose }) => {
     return (
-        <div className="modal-overlay" onClick={onClose} style={{
-            position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
-            backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center',
-            alignItems: 'center', zIndex: 9999
-        }}>
-            <div className="modal-content" onClick={e => e.stopPropagation()} style={{
-                backgroundColor: 'var(--bg-surface)', padding: '2rem', borderRadius: '12px',
-                width: '450px', boxShadow: '0 10px 25px rgba(0,0,0,0.3)',
-                display: 'flex', flexDirection: 'column', gap: '1rem',
-                border: '1px solid var(--border-color)'
+        <div className="modal-overlay" onClick={onClose} style={{ zIndex: 9999 }}>
+            <div className="modal" onClick={e => e.stopPropagation()} style={{
+                background: 'var(--bg-elevated)',
+                padding: '24px',
+                borderRadius: 'var(--radius-xl)',
+                width: '450px',
+                border: '1px solid var(--border-primary)',
+                boxShadow: 'var(--shadow-lg)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '16px',
+                color: 'var(--text-primary)'
             }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <h2 style={{ margin: 0, fontSize: '1.5rem', color: 'var(--text-primary)' }}>Everest</h2>
-                    <button onClick={onClose} style={{
-                        background: 'transparent', border: 'none', color: 'var(--text-secondary)',
-                        cursor: 'pointer', fontSize: '1.2rem'
-                    }}>✕</button>
+                    <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 600, color: 'var(--text-primary)' }}>Everest</h2>
+                    <button className="toolbar-btn" onClick={onClose} style={{ padding: 4 }}>
+                        <SFIcon name="xmark" size={14} />
+                    </button>
                 </div>
                 
-                <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                <div style={{ color: 'var(--text-tertiary)', fontSize: '0.85rem', fontFamily: 'var(--font-mono)' }}>
                     Version: {version}
                 </div>
 
-                <p style={{ color: 'var(--text-primary)', lineHeight: '1.5' }}>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: '1.5', margin: 0 }}>
                     Everest is a desktop API testing platform designed for local development, automation, debugging, environment management, and collection-based testing workflows.
                 </p>
 
                 <div>
-                    <strong style={{ color: 'var(--text-primary)' }}>Built using:</strong>
-                    <ul style={{ color: 'var(--text-secondary)', marginTop: '0.5rem', paddingLeft: '1.5rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px' }}>
+                    <strong style={{ color: 'var(--text-primary)', fontSize: '0.85rem' }}>Built using:</strong>
+                    <ul style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginTop: '6px', paddingLeft: '20px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px' }}>
                         <li>Electron.js</li>
                         <li>React</li>
                         <li>TypeScript</li>
@@ -48,8 +50,8 @@ export const AboutDialog: React.FC<AboutDialogProps> = ({ onClose }) => {
                 </div>
 
                 <div>
-                    <strong style={{ color: 'var(--text-primary)' }}>Features:</strong>
-                    <ul style={{ color: 'var(--text-secondary)', marginTop: '0.5rem', paddingLeft: '1.5rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px' }}>
+                    <strong style={{ color: 'var(--text-primary)', fontSize: '0.85rem' }}>Features:</strong>
+                    <ul style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginTop: '6px', paddingLeft: '20px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px' }}>
                         <li>API Testing</li>
                         <li>Collections</li>
                         <li>Environments</li>
@@ -62,8 +64,8 @@ export const AboutDialog: React.FC<AboutDialogProps> = ({ onClose }) => {
                 </div>
 
                 <div style={{ 
-                    marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--border-color)',
-                    textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem'
+                    marginTop: '8px', paddingTop: '12px', borderTop: '1px solid var(--border-primary)',
+                    textAlign: 'center', color: 'var(--text-tertiary)', fontSize: '0.8rem'
                 }}>
                     Made with ❤️ and JavaScript
                 </div>

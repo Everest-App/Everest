@@ -254,9 +254,9 @@ async function main() {
   const isMac = process.platform === 'darwin';
   const isWin = process.platform === 'win32';
 
-  log('Building Mac DMG (x64 + arm64) and Windows NSIS installer...');
-  run('npx electron-builder --mac --win', { cwd: desktopDir });
-  success('Mac + Windows installers generated');
+  log('Building Mac DMG (x64 + arm64), Windows NSIS, and Linux installers...');
+  run('npx electron-builder --mac --win --linux', { cwd: desktopDir });
+  success('Mac + Windows + Linux installers generated');
 
   // List generated artifacts
   const distOutputDir = join(desktopDir, 'dist');

@@ -7,6 +7,7 @@ import { RunnerItemResult, parseCsv } from '@api-platform/core';
 import { generateJSONReport, generateTextReport, downloadReport } from '../../utils/runner-report';
 import { JsonTreeViewer } from '../response/JsonTreeViewer';
 import { SaveToFolderModal } from '../collections/SaveToFolderModal';
+import { SFIcon } from '../common/SFIcon';
 
 const METHOD_COLORS: Record<string, string> = {
     GET: 'var(--method-get)',
@@ -253,14 +254,15 @@ export function RunnerPanel({ onClose }: { onClose: () => void }) {
             <div className="runner-page-header">
                 <div className="runner-page-header-left">
                     <button className="runner-back-btn" onClick={onClose} title={t('runner.closeRunner')}>
-                        <span>←</span>
+                        <SFIcon name="chevron.left" size={12} />
                     </button>
                     <div className="runner-page-title-group">
-                        <h2 className="runner-page-title">
-                            {folderName
-                                ? `${t('runner.title')} — 📁 ${folderName}`
-                                : t('runner.title')
-                            }
+                        <h2 className="runner-page-title" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                            {folderName ? (
+                                <>{t('runner.title')} — <SFIcon name="folder.fill" size={14} /> {folderName}</>
+                            ) : (
+                                t('runner.title')
+                            )}
                         </h2>
                         {isRunning && <span className="runner-status-badge running">{t('runner.running')}</span>}
                         {result && !isRunning && (
@@ -273,7 +275,7 @@ export function RunnerPanel({ onClose }: { onClose: () => void }) {
                 <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                     {isRunning && (
                         <button className="runner-cancel-btn" onClick={handleCancel}>
-                            ■ {t('runner.cancelRun', { defaultValue: 'Cancel Run' })}
+                            <SFIcon name="stop.fill" size={11} style={{ marginRight: 4 }} /> {t('runner.cancelRun', { defaultValue: 'Cancel Run' })}
                         </button>
                     )}
                     {showResults && (
@@ -308,7 +310,7 @@ export function RunnerPanel({ onClose }: { onClose: () => void }) {
             {(showResults || showLive) && (
                 <div className="runner-summary-cards">
                     <div className="runner-card">
-                        <div className="runner-card-icon requests">📡</div>
+                        <div className="runner-card-icon requests"><SFIcon name="paperplane.fill" size={14} /></div>
                         <div className="runner-card-content">
                             <div className="runner-card-value">
                                 {showResults ? result!.totalRequests : liveResults.length}
@@ -317,7 +319,7 @@ export function RunnerPanel({ onClose }: { onClose: () => void }) {
                         </div>
                     </div>
                     <div className="runner-card passed">
-                        <div className="runner-card-icon">✓</div>
+                        <div className="runner-card-icon"><SFIcon name="checkmark.circle.fill" size={14} /></div>
                         <div className="runner-card-content">
                             <div className="runner-card-value">
                                 {showResults ? result!.totalPassed : livePassedCount}
@@ -326,7 +328,7 @@ export function RunnerPanel({ onClose }: { onClose: () => void }) {
                         </div>
                     </div>
                     <div className="runner-card failed">
-                        <div className="runner-card-icon">✗</div>
+                        <div className="runner-card-icon"><SFIcon name="xmark.circle.fill" size={14} /></div>
                         <div className="runner-card-content">
                             <div className="runner-card-value">
                                 {showResults ? result!.totalFailed : liveFailedCount}
@@ -335,7 +337,7 @@ export function RunnerPanel({ onClose }: { onClose: () => void }) {
                         </div>
                     </div>
                     <div className="runner-card">
-                        <div className="runner-card-icon tests">🧪</div>
+                        <div className="runner-card-icon tests"><SFIcon name="testtube.2" size={14} /></div>
                         <div className="runner-card-content">
                             <div className="runner-card-value">
                                 {showResults
@@ -349,14 +351,14 @@ export function RunnerPanel({ onClose }: { onClose: () => void }) {
                     {showResults && (
                         <>
                             <div className="runner-card">
-                                <div className="runner-card-icon duration">⏱</div>
+                                <div className="runner-card-icon duration"><SFIcon name="clock.fill" size={14} /></div>
                                 <div className="runner-card-content">
                                     <div className="runner-card-value">{result!.totalDuration}ms</div>
                                     <div className="runner-card-label">{t('runner.duration')}</div>
                                 </div>
                             </div>
                             <div className="runner-card rate">
-                                <div className="runner-card-icon">📊</div>
+                                <div className="runner-card-icon"><SFIcon name="chart.bar.fill" size={14} /></div>
                                 <div className="runner-card-content">
                                     <div className="runner-card-value">
                                         {result!.totalRequests > 0
@@ -419,7 +421,7 @@ export function RunnerPanel({ onClose }: { onClose: () => void }) {
                                         >
                                             <option value="">{t('runner.allRequests', { defaultValue: 'All Requests (entire collection)' })}</option>
                                             {folders.map(f => (
-                                                <option key={f.id} value={f.id}>📁 {f.name}</option>
+                                                <option key={f.id} value={f.id}>{f.name}</option>
                                             ))}
                                         </select>
                                     </div>
@@ -485,7 +487,9 @@ export function RunnerPanel({ onClose }: { onClose: () => void }) {
                                             style={{ display: 'none' }}
                                             onChange={handleFileInput}
                                         />
-                                        <div className="runner-csv-upload-icon">📄</div>
+                                        <div className="runner-csv-upload-icon">
+                                            <SFIcon name="doc.text" size={28} />
+                                        </div>
                                         <div className="runner-csv-upload-text">
                                             {t('runner.csvUploadHint', { defaultValue: 'Drop a .csv file here or click to browse' })}
                                         </div>
@@ -499,7 +503,9 @@ export function RunnerPanel({ onClose }: { onClose: () => void }) {
                                 ) : (
                                     /* File info */
                                     <div className="runner-csv-file-info">
-                                        <div className="runner-csv-file-icon">📄</div>
+                                        <div className="runner-csv-file-icon">
+                                            <SFIcon name="doc.text" size={16} />
+                                        </div>
                                         <div className="runner-csv-file-details">
                                             <div className="runner-csv-file-name">{csvFileName}</div>
                                             <div className="runner-csv-file-meta">
@@ -509,8 +515,8 @@ export function RunnerPanel({ onClose }: { onClose: () => void }) {
                                             </div>
                                         </div>
                                         <button className="runner-csv-remove-btn" onClick={clearCsv}>
-                                            ✕
-                                        </button>
+                                             <SFIcon name="xmark" size={11} />
+                                         </button>
                                     </div>
                                 )}
 
@@ -601,7 +607,7 @@ export function RunnerPanel({ onClose }: { onClose: () => void }) {
                                 onClick={handleRun}
                                 disabled={!config.collectionId}
                             >
-                                <span className="runner-run-icon">▶</span>
+                                <SFIcon name="play.fill" size={11} style={{ marginRight: 6 }} />
                                 {config.folderId
                                     ? t('runner.runFolder', { defaultValue: 'Run Folder' })
                                     : t('runner.runCollection')
@@ -846,7 +852,7 @@ function RunnerResponseTab({ item }: { item: RunnerItemResult }) {
     if (!item.response) {
         return (
             <div className="runner-detail-empty">
-                <span className="runner-detail-empty-icon">⚠</span>
+                <span className="runner-detail-empty-icon"><SFIcon name="exclamationmark.triangle.fill" size={16} /></span>
                 <span>{item.error || 'No response received'}</span>
             </div>
         );
@@ -924,7 +930,7 @@ function RunnerTestsTab({ item }: { item: RunnerItemResult }) {
     if (total === 0 && !item.error && !item.scriptError) {
         return (
             <div className="runner-detail-empty">
-                <span className="runner-detail-empty-icon">🧪</span>
+                <span className="runner-detail-empty-icon"><SFIcon name="testtube.2" size={16} /></span>
                 <span>No tests defined for this request</span>
             </div>
         );
@@ -936,8 +942,8 @@ function RunnerTestsTab({ item }: { item: RunnerItemResult }) {
             {total > 0 && (
                 <div className="runner-tests-summary">
                     <span className="runner-tests-total">{total} test{total !== 1 ? 's' : ''}</span>
-                    {passed > 0 && <span className="runner-tests-badge pass">✓ {passed} passed</span>}
-                    {failed > 0 && <span className="runner-tests-badge fail">✗ {failed} failed</span>}
+                    {passed > 0 && <span className="runner-tests-badge pass"><SFIcon name="checkmark.circle.fill" size={11} style={{ marginRight: 4 }} /> {passed} passed</span>}
+                    {failed > 0 && <span className="runner-tests-badge fail"><SFIcon name="xmark.circle.fill" size={11} style={{ marginRight: 4 }} /> {failed} failed</span>}
                     <div className="runner-tests-progress-bar">
                         <div className="runner-tests-progress-fill pass" style={{ width: `${(passed / total) * 100}%` }} />
                         <div className="runner-tests-progress-fill fail" style={{ width: `${(failed / total) * 100}%` }} />
@@ -948,14 +954,14 @@ function RunnerTestsTab({ item }: { item: RunnerItemResult }) {
             {/* Errors */}
             {item.error && (
                 <div className="runner-result-error">
-                    <span className="runner-error-icon">⚠</span> {item.error}
+                    <span className="runner-error-icon"><SFIcon name="exclamationmark.triangle.fill" size={12} /></span> {item.error}
                 </div>
             )}
 
             {/* Individual tests */}
             {item.testResults.map((test, ti) => (
                 <div key={ti} className={`runner-test-row ${test.passed ? 'pass' : 'fail'}`}>
-                    <span className="runner-test-icon">{test.passed ? '✓' : '✗'}</span>
+                    <span className="runner-test-icon"><SFIcon name={test.passed ? "checkmark.circle.fill" : "xmark.circle.fill"} size={12} /></span>
                     <span className="runner-test-name">{test.name}</span>
                     {test.error && (
                         <span className="runner-test-error-msg">{test.error}</span>
@@ -973,7 +979,7 @@ function RunnerConsoleTab({ item }: { item: RunnerItemResult }) {
     if (logs.length === 0 && !hasError) {
         return (
             <div className="runner-detail-empty">
-                <span className="runner-detail-empty-icon">📋</span>
+                <span className="runner-detail-empty-icon"><SFIcon name="doc.text" size={16} /></span>
                 <span>No console output</span>
             </div>
         );

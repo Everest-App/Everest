@@ -5,6 +5,7 @@ import { CollectionPanel } from '../collections/CollectionPanel';
 import { EnvironmentPanel } from '../environments/EnvironmentPanel';
 import { ImportExportModal } from '../import-export/ImportExportModal';
 import { appEvents, NAVIGATE_TO_VARIABLE } from '../../utils/event-bus';
+import { SFIcon } from '../common/SFIcon';
 
 type SidebarTab = 'collections' | 'environments' | 'history';
 
@@ -45,9 +46,9 @@ export function Sidebar({ onOpenRunner }: SidebarProps) {
             {activeTab === 'collections' && (
                 <div style={{ padding: '6px 12px 0', borderBottom: '1px solid var(--border-primary)', display: 'flex', gap: 4 }}>
                     <button className="toolbar-btn" style={{ flex: 1, justifyContent: 'center', fontSize: 11 }}
-                        onClick={() => setShowImportExport(true)}>{t('sidebar.import')}</button>
+                        onClick={() => setShowImportExport(true)}><SFIcon name="arrow.up.arrow.down" size={11} style={{ marginRight: 4 }} />{t('sidebar.import')}</button>
                     <button className="toolbar-btn" style={{ flex: 1, justifyContent: 'center', fontSize: 11 }}
-                        onClick={() => onOpenRunner()}>{t('sidebar.runner')}</button>
+                        onClick={() => onOpenRunner()}><SFIcon name="play.fill" size={10} style={{ marginRight: 4 }} />{t('sidebar.runner')}</button>
                 </div>
             )}
 

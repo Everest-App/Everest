@@ -1,5 +1,6 @@
 import React from 'react';
-import { ScriptResult, TestAssertion } from '@api-platform/core';
+import { ScriptResult } from '@api-platform/core';
+import { SFIcon } from '../common/SFIcon';
 
 interface TestResultsPanelProps {
     testResult?: ScriptResult;
@@ -19,7 +20,7 @@ export function TestResultsPanel({ testResult, preRequestResult }: TestResultsPa
         return (
             <div className="test-results-panel">
                 <div className="test-results-empty">
-                    <div className="test-results-empty-icon">🧪</div>
+                    <div className="test-results-empty-icon"><SFIcon name="testtube.2" size={28} /></div>
                     <div className="test-results-empty-title">No Test Results Yet</div>
                     <div className="test-results-empty-sub">
                         Write test scripts in the <strong>Tests</strong> tab and send a request to see results here.
@@ -40,7 +41,7 @@ export function TestResultsPanel({ testResult, preRequestResult }: TestResultsPa
             {preRequestError && (
                 <div className="test-results-script-error">
                     <div className="test-results-script-error-header">
-                        <span className="test-results-error-icon">⚠</span>
+                        <span className="test-results-error-icon"><SFIcon name="exclamationmark.triangle.fill" size={12} /></span>
                         <span>Pre-request Script Error</span>
                     </div>
                     <pre className="test-results-script-error-body">{preRequestError}</pre>
@@ -51,7 +52,7 @@ export function TestResultsPanel({ testResult, preRequestResult }: TestResultsPa
             {testScriptError && (
                 <div className="test-results-script-error">
                     <div className="test-results-script-error-header">
-                        <span className="test-results-error-icon">⚠</span>
+                        <span className="test-results-error-icon"><SFIcon name="exclamationmark.triangle.fill" size={12} /></span>
                         <span>Test Script Error</span>
                     </div>
                     <pre className="test-results-script-error-body">{testScriptError}</pre>
@@ -67,13 +68,13 @@ export function TestResultsPanel({ testResult, preRequestResult }: TestResultsPa
                     <div className="test-results-summary-counts">
                         {passed > 0 && (
                             <span className="test-results-badge pass">
-                                <span className="test-results-badge-icon">✓</span>
+                                <span className="test-results-badge-icon"><SFIcon name="checkmark.circle.fill" size={11} /></span>
                                 {passed} passed
                             </span>
                         )}
                         {failed > 0 && (
                             <span className="test-results-badge fail">
-                                <span className="test-results-badge-icon">✗</span>
+                                <span className="test-results-badge-icon"><SFIcon name="xmark.circle.fill" size={11} /></span>
                                 {failed} failed
                             </span>
                         )}
@@ -101,7 +102,7 @@ export function TestResultsPanel({ testResult, preRequestResult }: TestResultsPa
                             style={{ animationDelay: `${idx * 40}ms` }}
                         >
                             <span className={`test-result-icon ${assertion.passed ? 'pass' : 'fail'}`}>
-                                {assertion.passed ? '✓' : '✗'}
+                                <SFIcon name={assertion.passed ? "checkmark.circle.fill" : "xmark.circle.fill"} size={12} />
                             </span>
                             <span className="test-result-name">{assertion.name}</span>
                             {assertion.error && (
@@ -137,7 +138,7 @@ export function ConsoleOutputPanel({ preRequestResult, testResult }: ConsoleOutp
         return (
             <div className="console-panel">
                 <div className="console-empty">
-                    <div className="console-empty-icon">📋</div>
+                    <div className="console-empty-icon"><SFIcon name="doc.text" size={28} /></div>
                     <div className="console-empty-title">Console is Empty</div>
                     <div className="console-empty-sub">
                         Use <code>console.log()</code> in your scripts to see output here.

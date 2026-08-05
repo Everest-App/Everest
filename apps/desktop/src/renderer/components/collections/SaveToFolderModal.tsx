@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useCollectionStore } from '../../store/collection-store';
 import { RequestConfig, ResponseData, CollectionItem } from '@api-platform/core';
 import { buildTree } from '../../utils/search-utils';
+import { SFIcon } from '../common/SFIcon';
 import { v4 as uuidv4 } from 'uuid';
 
 interface SaveToFolderModalProps {
@@ -95,15 +96,15 @@ export function SaveToFolderModal({ request, response, requestName, onClose, onS
                 >
                     {subfolders.length > 0 && (
                         <span
-                            className="folder-picker-toggle"
+                            className="folder-picker-arrow"
                             onClick={(e) => { e.stopPropagation(); toggleNode(item.id); }}
                         >
-                            {isExpanded ? '▾' : '▸'}
+                            <SFIcon name={isExpanded ? "chevron.down" : "chevron.right"} size={10} />
                         </span>
                     )}
-                    <span className="folder-picker-icon">📁</span>
+                    <span className="folder-picker-icon"><SFIcon name="folder.fill" size={12} /></span>
                     <span className="folder-picker-name">{item.name}</span>
-                    {isSelected && <span className="folder-picker-check">✓</span>}
+                    {isSelected && <span className="folder-picker-check"><SFIcon name="checkmark.circle.fill" size={12} /></span>}
                 </div>
                 {isExpanded && subfolders.map(child => renderFolderNode(child, depth + 1))}
             </div>
@@ -117,7 +118,7 @@ export function SaveToFolderModal({ request, response, requestName, onClose, onS
                     <span className="modal-title">
                         {t('collection.saveToFolder', { defaultValue: 'Save to Folder' })}
                     </span>
-                    <button className="modal-close" onClick={onClose}>×</button>
+                    <button className="modal-close" onClick={onClose}><SFIcon name="xmark" size={12} /></button>
                 </div>
                 <div className="modal-body">
                     {/* Request name */}

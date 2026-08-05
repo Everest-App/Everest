@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { WebSocketMessage } from '@api-platform/core';
+import { SFIcon } from '../common/SFIcon';
 
 export function WebSocketPanel() {
     const [url, setUrl] = useState('');
@@ -82,7 +83,7 @@ export function WebSocketPanel() {
             <div className="ws-log" ref={logRef}>
                 {messages.length === 0 && (
                     <div className="empty-state" style={{ height: 150 }}>
-                        <div className="empty-state-icon">🔌</div>
+                        <div className="empty-state-icon"><SFIcon name="powerplug.fill" size={28} /></div>
                         <div className="empty-state-sub">Connect to a WebSocket server</div>
                     </div>
                 )}
@@ -92,7 +93,7 @@ export function WebSocketPanel() {
                             <span className="ws-message-dir" style={{
                                 color: msgTypeColors[msg.type] || msgTypeColors[msg.direction] || 'var(--text-secondary)',
                             }}>
-                                {msg.type === 'open' ? '⚡' : msg.type === 'close' ? '🔌' : msg.type === 'error' ? '❌' :
+                                {msg.type === 'open' ? <SFIcon name="bolt.fill" size={11} /> : msg.type === 'close' ? <SFIcon name="powerplug.fill" size={11} /> : msg.type === 'error' ? <SFIcon name="xmark.circle.fill" size={11} /> :
                                     msg.direction === 'sent' ? '↑' : '↓'}
                             </span>
                             <span className="ws-message-type">{msg.type}</span>

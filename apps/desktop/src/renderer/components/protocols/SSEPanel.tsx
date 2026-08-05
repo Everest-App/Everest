@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { SSEEvent } from '@api-platform/core';
+import { SFIcon } from '../common/SFIcon';
 
 export function SSEPanel() {
     const [url, setUrl] = useState('');
@@ -66,7 +68,7 @@ export function SSEPanel() {
             <div className="ws-log" ref={logRef}>
                 {events.length === 0 && (
                     <div className="empty-state" style={{ height: 150 }}>
-                        <div className="empty-state-icon">📡</div>
+                        <div className="empty-state-icon"><SFIcon name="antenna.radiowaves.left.and.right" size={28} /></div>
                         <div className="empty-state-sub">Connect to an SSE endpoint</div>
                     </div>
                 )}
@@ -76,8 +78,8 @@ export function SSEPanel() {
                             <span className="ws-message-dir" style={{
                                 color: eventColors[event.eventType] || 'var(--accent-primary)',
                             }}>
-                                {event.eventType === 'open' ? '⚡' : event.eventType === 'close' ? '🔌' :
-                                    event.eventType === 'error' ? '❌' : '↓'}
+                                {event.eventType === 'open' ? <SFIcon name="bolt.fill" size={11} /> : event.eventType === 'close' ? <SFIcon name="powerplug.fill" size={11} /> :
+                                    event.eventType === 'error' ? <SFIcon name="xmark.circle.fill" size={11} /> : '↓'}
                             </span>
                             <span className="ws-message-type">{event.eventType}</span>
                             {event.lastEventId && <span className="ws-message-type" style={{ opacity: 0.6 }}>id: {event.lastEventId}</span>}

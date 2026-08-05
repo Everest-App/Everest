@@ -5,6 +5,7 @@ import { ResponseHeaders } from './ResponseHeaders';
 import { ResponseMetrics } from './ResponseMetrics';
 import { TestResultsPanel, ConsoleOutputPanel } from '../scripts/TestResultsPanel';
 import { useTabStore } from '../../store/tab-store';
+import { SFIcon } from '../common/SFIcon';
 
 type ResponseTab = 'body' | 'headers' | 'test-results' | 'console';
 
@@ -71,7 +72,7 @@ export function ResponsePanel() {
         return (
             <div className="response-panel">
                 <div className="empty-state" style={{ minHeight: 200 }}>
-                    <div className="empty-state-icon">⚡</div>
+                    <div className="empty-state-icon"><SFIcon name="bolt.fill" size={28} /></div>
                     <div className="empty-state-text">{t('request.enterUrlAndSend')}</div>
                     <div className="empty-state-sub">{t('request.responseWillAppear')}</div>
                 </div>

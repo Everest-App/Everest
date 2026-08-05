@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useCollectionStore } from '../../store/collection-store';
 import { ImportFormat, ExportFormat } from '@api-platform/core';
+import { SFIcon } from '../common/SFIcon';
 import { ImportNameModal } from '../common/ImportNameModal';
 
 interface ImportExportModalProps {
@@ -171,7 +173,7 @@ export function ImportExportModal({ onClose }: ImportExportModalProps) {
 
                             {/* Import from file */}
                             <button className="send-btn" style={{ marginBottom: 12, width: '100%' }} onClick={handleImportFile} disabled={loading}>
-                                {loading ? 'Importing...' : '📂 Import from File'}
+                                {loading ? 'Importing...' : <><SFIcon name="doc.badge.plus" size={12} style={{ marginRight: 6 }} /> Import from File</>}
                             </button>
 
                             <div style={{ textAlign: 'center', color: 'var(--text-tertiary)', fontSize: 11, margin: '8px 0' }}>— or paste content below —</div>

@@ -14,6 +14,7 @@
     "package": "npm run build && npm run package -w apps/desktop",
     "package:mac": "npm run build && npm run package:mac -w apps/desktop",
     "package:win": "npm run build && npm run package:win -w apps/desktop",
+    "package:linux": "npm run build && npm run package:linux -w apps/desktop",
     "lint": "npm run lint -w apps/desktop",
     "release:patch": "node scripts/release.mjs patch",
     "release:minor": "node scripts/release.mjs minor",

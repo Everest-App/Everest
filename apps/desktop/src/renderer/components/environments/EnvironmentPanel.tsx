@@ -6,6 +6,7 @@ import { Environment, Variable } from '@api-platform/core';
 import { useDebouncedValue } from '../../hooks/useSearch';
 import { searchVariables, MatchedVariable } from '../../utils/search-utils';
 import { HighlightedText } from '../common/HighlightedText';
+import { SFIcon } from '../common/SFIcon';
 
 interface EnvironmentPanelProps {
     highlightVarName?: string | null;
@@ -201,8 +202,8 @@ export function EnvironmentPanel({ highlightVarName }: EnvironmentPanelProps) {
                     className="env-section-header"
                     onClick={() => setShowGlobals(!showGlobals)}
                 >
-                    <span>{showGlobals ? '▾' : '▸'}</span>
-                    <span>🌍 {t('environment.globalVariables')}</span>
+                    <span><SFIcon name={showGlobals ? "chevron.down" : "chevron.right"} size={10} /></span>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><SFIcon name="globe" size={12} /> {t('environment.globalVariables')}</span>
                     <span className="badge" style={{ marginInlineStart: 'auto' }}>{globalVariables.filter(v => v.enabled && v.key).length}</span>
                 </div>
                 {showGlobals && renderVarEditor(
@@ -245,11 +246,14 @@ export function EnvironmentPanel({ highlightVarName }: EnvironmentPanelProps) {
             {environments.map(env => (
                 <div key={env.id} className="env-section">
                     <div className="env-section-header" onClick={() => setEditingEnv(editingEnv?.id === env.id ? null : env)}>
-                        <span>{editingEnv?.id === env.id ? '▾' : '▸'}</span>
-                        <span>{activeEnvironmentId === env.id ? '🟢' : '⚪'} {env.name}</span>
+                        <span><SFIcon name={editingEnv?.id === env.id ? "chevron.down" : "chevron.right"} size={10} /></span>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                            <SFIcon name={activeEnvironmentId === env.id ? "checkmark.circle.fill" : "circle"} size={11} style={{ color: activeEnvironmentId === env.id ? 'var(--method-get)' : 'var(--text-tertiary)' }} />
+                            {env.name}
+                        </span>
                         <div className="collection-item-actions">
-                            <button onClick={(e) => { e.stopPropagation(); setActiveEnvironment(env.id); }} title={t('environment.activate')}>✓</button>
-                            <button onClick={(e) => { e.stopPropagation(); deleteEnvironment(env.id); }} title={t('common.delete')}>×</button>
+                            <button onClick={(e) => { e.stopPropagation(); setActiveEnvironment(env.id); }} title={t('environment.activate')}><SFIcon name="checkmark.circle.fill" size={11} /></button>
+                            <button onClick={(e) => { e.stopPropagation(); deleteEnvironment(env.id); }} title={t('common.delete')}><SFIcon name="xmark" size={11} /></button>
                         </div>
                     </div>
                     {editingEnv?.id === env.id && renderVarEditor(

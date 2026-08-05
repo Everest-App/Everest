@@ -1,4 +1,5 @@
 import React, { useState, useCallback, memo } from 'react';
+import { SFIcon } from '../common/SFIcon';
 
 interface JsonTreeViewerProps {
     data: any;
@@ -78,7 +79,9 @@ const JsonNode = memo(function JsonNode({ keyName, value, depth, initialDepth, i
     return (
         <>
             <div className="json-line json-collapsible" style={{ paddingLeft: indent }} onClick={toggle}>
-                <span className={`json-toggle ${expanded ? 'expanded' : ''}`}>▶</span>
+                <span className={`json-toggle ${expanded ? 'expanded' : ''}`}>
+                    <SFIcon name={expanded ? "chevron.down" : "chevron.right"} size={9} />
+                </span>
                 {keyName !== null && (
                     <>
                         <span className="json-key">"{keyName}"</span>

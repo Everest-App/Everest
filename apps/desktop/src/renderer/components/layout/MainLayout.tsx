@@ -13,6 +13,7 @@ import { useThemeStore } from '../../store/theme-store';
 import { useRunnerStore } from '../../store/runner-store';
 import { useLanguageStore } from '../../store/language-store';
 import { AppIcon } from '../common/AppIcon';
+import { SFIcon } from '../common/SFIcon';
 
 type ProtocolMode = 'http' | 'graphql' | 'websocket' | 'sse' | 'mock';
 
@@ -59,6 +60,7 @@ export function MainLayout() {
 
     // ── Response panel resize state ──
     const [responseHeight, setResponseHeight] = useState(getStoredHeight);
+    const [isResizingResponseState, setIsResizingResponseState] = useState(false);
     const isResizingResponse = useRef(false);
     const responseStartY = useRef(0);
     const responseStartH = useRef(0);
@@ -66,6 +68,7 @@ export function MainLayout() {
 
     // ── Sidebar resize state ──
     const [sidebarWidth, setSidebarWidth] = useState(getStoredSidebarWidth);
+    const [isResizingSidebarState, setIsResizingSidebarState] = useState(false);
     const isResizingSidebar = useRef(false);
     const sidebarStartX = useRef(0);
     const sidebarStartW = useRef(0);
@@ -83,6 +86,7 @@ export function MainLayout() {
     const handleResponseMouseDown = useCallback((e: React.MouseEvent) => {
         e.preventDefault();
         isResizingResponse.current = true;
+        setIsResizingResponseState(true);
         responseStartY.current = e.clientY;
         responseStartH.current = responseHeight;
         document.body.style.cursor = 'row-resize';
@@ -93,6 +97,7 @@ export function MainLayout() {
     const handleSidebarMouseDown = useCallback((e: React.MouseEvent) => {
         e.preventDefault();
         isResizingSidebar.current = true;
+        setIsResizingSidebarState(true);
         sidebarStartX.current = e.clientX;
         sidebarStartW.current = sidebarWidth;
         document.body.style.cursor = 'col-resize';
@@ -142,6 +147,7 @@ export function MainLayout() {
         const handleMouseUp = () => {
             if (isResizingResponse.current) {
                 isResizingResponse.current = false;
+                setIsResizingResponseState(false);
                 document.body.style.cursor = '';
                 document.body.style.userSelect = '';
                 setResponseHeight((h) => {
@@ -152,6 +158,7 @@ export function MainLayout() {
 
             if (isResizingSidebar.current) {
                 isResizingSidebar.current = false;
+                setIsResizingSidebarState(false);
                 document.body.style.cursor = '';
                 document.body.style.userSelect = '';
                 setSidebarWidth((w) => {
@@ -188,7 +195,7 @@ export function MainLayout() {
                                 {language === 'en' ? 'FA' : 'EN'}
                             </button>
                             <button className="theme-toggle" onClick={toggleTheme} title={t('settings.toggleTheme')}>
-                                {theme === 'dark' ? '☀️' : '🌙'}
+                                {theme === 'dark' ? <SFIcon name="sun.max.fill" size={13} /> : <SFIcon name="moon.fill" size={13} />}
                             </button>
                         </div>
                     </div>
@@ -197,7 +204,7 @@ export function MainLayout() {
 
                 {/* ── Sidebar Resizer ── */}
                 <div
-                    className="sidebar-resizer"
+                    className={`sidebar-resizer ${isResizingSidebarState ? 'active' : ''}`}
                     onMouseDown={handleSidebarMouseDown}
                     onDoubleClick={handleSidebarDoubleClick}
                     title="Drag to resize sidebar — double-click to reset"
@@ -208,36 +215,36 @@ export function MainLayout() {
                         <RunnerPanel onClose={closeRunner} />
                     ) : (
                         <>
-                            {/* Protocol mode selector */}
-                            <div className="protocol-selector">
-                                <button className={`protocol-btn ${protocolMode === 'http' ? 'active' : ''}`}
-                                    onClick={() => setProtocolMode('http')}>{t('protocol.http')}</button>
-                                <button className={`protocol-btn ${protocolMode === 'graphql' ? 'active' : ''}`}
-                                    onClick={() => setProtocolMode('graphql')}>{t('protocol.graphql')}</button>
-                                <button className={`protocol-btn ${protocolMode === 'websocket' ? 'active' : ''}`}
-                                    onClick={() => setProtocolMode('websocket')}>{t('protocol.websocket')}</button>
-                                <button className={`protocol-btn ${protocolMode === 'sse' ? 'active' : ''}`}
-                                    onClick={() => setProtocolMode('sse')}>{t('protocol.sse')}</button>
-                                <button className={`protocol-btn ${protocolMode === 'mock' ? 'active' : ''}`}
-                                    onClick={() => setProtocolMode('mock')}>{t('protocol.mockServer')}</button>
+                            {/* Protocol & Tabs Island */}
+                            <div className="tabs-island">
+                                <div className="protocol-selector">
+                                    <button className={`protocol-btn ${protocolMode === 'http' ? 'active' : ''}`}
+                                        onClick={() => setProtocolMode('http')}>{t('protocol.http')}</button>
+                                    <button className={`protocol-btn ${protocolMode === 'graphql' ? 'active' : ''}`}
+                                        onClick={() => setProtocolMode('graphql')}>{t('protocol.graphql')}</button>
+                                    <button className={`protocol-btn ${protocolMode === 'websocket' ? 'active' : ''}`}
+                                        onClick={() => setProtocolMode('websocket')}>{t('protocol.websocket')}</button>
+                                    <button className={`protocol-btn ${protocolMode === 'sse' ? 'active' : ''}`}
+                                        onClick={() => setProtocolMode('sse')}>{t('protocol.sse')}</button>
+                                    <button className={`protocol-btn ${protocolMode === 'mock' ? 'active' : ''}`}
+                                        onClick={() => setProtocolMode('mock')}>{t('protocol.mockServer')}</button>
+                                </div>
+                                {protocolMode === 'http' && <TabBar />}
                             </div>
 
                             {protocolMode === 'http' && (
-                                <>
-                                    <TabBar />
-                                    <div className="content-area">
-                                        <div className="request-section">
-                                            <RequestPanel />
-                                        </div>
-                                        <div
-                                            className="resizer"
-                                            onMouseDown={handleResponseMouseDown}
-                                        />
-                                        <div style={{ height: responseHeight, minHeight: MIN_RESPONSE_HEIGHT, flexShrink: 0 }}>
-                                            <ResponsePanel />
-                                        </div>
+                                <div className="content-area">
+                                    <div className="request-section">
+                                        <RequestPanel />
                                     </div>
-                                </>
+                                    <div
+                                        className={`resizer ${isResizingResponseState ? 'active' : ''}`}
+                                        onMouseDown={handleResponseMouseDown}
+                                    />
+                                    <div className="response-section" style={{ height: responseHeight, minHeight: MIN_RESPONSE_HEIGHT, flexShrink: 0 }}>
+                                        <ResponsePanel />
+                                    </div>
+                                </div>
                             )}
 
                             {protocolMode === 'graphql' && (

@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import { SFIcon } from '../common/SFIcon';
 
 interface ResponseSearchBarProps {
     query: string;
@@ -51,7 +52,7 @@ export function ResponseSearchBar({
     return (
         <div className="response-search-bar">
             <div className="response-search-wrapper">
-                <span className="response-search-icon">🔍</span>
+                <span className="response-search-icon"><SFIcon name="magnifyingglass" size={11} /></span>
                 <input
                     ref={inputRef}
                     className="response-search-input"

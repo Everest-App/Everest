@@ -37,9 +37,9 @@
         "collections": "مجموعه‌ها",
         "environments": "محیط‌ها",
         "history": "تاریخچه",
-        "import": "↕ ورودی",
-        "runner": "▶ اجراکننده",
-        "plugins": "🧩 افزونه‌ها"
+        "import": "ورودی",
+        "runner": "اجراکننده",
+        "plugins": "افزونه‌ها"
     },
     "collection": {
         "newCollection": "+ مجموعه جدید",

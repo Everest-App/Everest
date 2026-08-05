@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { SFIcon } from '../common/SFIcon';
 import { PluginInfo, PluginManifest, PluginSetting } from '@api-platform/core';
 
 export function PluginManager({ onClose }: { onClose: () => void }) {
@@ -147,11 +149,11 @@ export function PluginManager({ onClose }: { onClose: () => void }) {
                                             {plugin.manifest.settings && plugin.manifest.settings.length > 0 && (
                                                 <button className="toolbar-btn" style={{ fontSize: 11 }}
                                                     onClick={() => setExpandedPlugin(expandedPlugin === plugin.manifest.id ? null : plugin.manifest.id)}>
-                                                    ⚙
+                                                    <SFIcon name="gearshape" size={11} />
                                                 </button>
                                             )}
                                             <button className="toolbar-btn" style={{ fontSize: 11, color: 'var(--method-delete)' }}
-                                                onClick={() => handleUninstall(plugin.manifest.id)}>✕</button>
+                                                onClick={() => handleUninstall(plugin.manifest.id)}><SFIcon name="xmark" size={11} /></button>
                                         </div>
                                     </div>
                                     <div className="plugin-desc">{plugin.manifest.description}</div>

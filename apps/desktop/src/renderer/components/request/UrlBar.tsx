@@ -7,6 +7,7 @@ import { HTTP_METHODS } from '@api-platform/core';
 import { HttpMethod } from '@api-platform/core';
 import { isCurlCommand } from '../../utils/curl-parser';
 import { tokenizeUrl, resolveVariable, findVariableLocation, ResolvedVariable } from '../../utils/env-resolver';
+import { SFIcon } from '../common/SFIcon';
 
 interface UrlBarProps {
     onCodeGen: () => void;
@@ -235,20 +236,20 @@ export function UrlBar({ onCodeGen, onImportCurl, onNavigateToVariable }: UrlBar
 
             {loading ? (
                 <button className="cancel-btn" onClick={handleCancel} title={t('common.cancel', { defaultValue: 'Cancel' })}>
-                    <span className="cancel-icon">■</span> {t('common.cancel', { defaultValue: 'Cancel' })}
+                    <SFIcon name="stop.fill" size={11} style={{ marginRight: 4 }} /> {t('common.cancel', { defaultValue: 'Cancel' })}
                 </button>
             ) : (
                 <button className="send-btn" onClick={handleSend} disabled={!request.url}>
-                    {t('common.send')}
+                    <SFIcon name="paperplane.fill" size={11} style={{ marginRight: 4 }} /> {t('common.send')}
                 </button>
             )}
 
             <button className="toolbar-btn" onClick={() => onImportCurl()} title={t('request.importCurl')}>
-                📋
+                <SFIcon name="terminal" size={12} />
             </button>
 
             <button className="toolbar-btn" onClick={onCodeGen} title={t('request.generateCode')}>
-                {'</>'}
+                <SFIcon name="code" size={12} />
             </button>
         </div>
     );
