@@ -2,7 +2,7 @@ import { ipcMain } from 'electron';
 import { IPC_CHANNELS } from '@api-platform/core';
 import { RequestConfig, SendRequestResult } from '@api-platform/core';
 import { saveToHistory } from '../services/history-service';
-import { getAllCollections } from '../services/collection-service';
+import { getItemWithAncestors } from '../services/collection-service';
 import { RuntimeEngine } from '../runtime/runtime-engine';
 import { RequestExecutor } from '../runtime/request-executor';
 import { RuntimeVariableResolver } from '../runtime/variable-resolver';
@@ -19,7 +19,7 @@ const sharedExecutor = new RequestExecutor();
 export function registerRequestHandlers(): void {
     ipcMain.handle(IPC_CHANNELS.REQUEST_SEND, async (_event, config: RequestConfig, environmentId?: string, collectionItemId?: string): Promise<SendRequestResult> => {
         try {
-            // Find the collection item if applicable
+            // Find the collection item and ancestor scripts if applicable
             let item: any = { id: `item-${Date.now()}`, name: config.url, request: config };
             let collectionId = '';
             let collectionPreReq = '';
@@ -28,22 +28,15 @@ export function registerRequestHandlers(): void {
             let folderTest = '';
 
             if (collectionItemId) {
-                const collections = getAllCollections();
-                for (const col of collections) {
-                    const foundItem = findItem(col.items, collectionItemId);
-                    if (foundItem) {
-                        item = foundItem;
-                        item.request = config; // Override with the edited config from the UI
-                        collectionId = col.id;
-                        collectionPreReq = col.preRequestScript || '';
-                        collectionTest = col.testScript || '';
-
-                        // Walk parents
-                        const parentScripts = buildFolderScripts(col.items, collectionItemId);
-                        folderPreReq = parentScripts.preReq;
-                        folderTest = parentScripts.test;
-                        break;
-                    }
+                const fetched = getItemWithAncestors(collectionItemId);
+                if (fetched) {
+                    item = fetched.item;
+                    item.request = config; // Override with the edited config from the UI
+                    collectionId = fetched.collectionId;
+                    collectionPreReq = fetched.collectionPreRequest;
+                    collectionTest = fetched.collectionTest;
+                    folderPreReq = fetched.folderPreRequest;
+                    folderTest = fetched.folderTest;
                 }
             }
 
@@ -91,26 +84,6 @@ export function registerRequestHandlers(): void {
     ipcMain.handle(IPC_CHANNELS.REQUEST_CANCEL, async () => {
         sharedExecutor.abort();
     });
-}
-
-function findItem(items: any[], id: string): any {
-    for (const item of items) {
-        if (item.id === id) return item;
-        if (item.children) {
-            const found = findItem(item.children, id);
-            if (found) return found;
-        }
-    }
-    return undefined;
-}
-
-function buildFolderScripts(items: any[], targetId: string) {
-    const scripts = { preReq: '', test: '' };
-
-    // Simple path finding (not full implementation to keep snippet small)
-    // You would implement a full parent walk here similar to the old buildScriptChain
-
-    return scripts;
 }
 
 function createEphemeralCookieJar() {

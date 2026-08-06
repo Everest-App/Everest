@@ -40,35 +40,53 @@ export const useCollectionStore = create<CollectionStore>((set, get) => ({
 
     createCollection: async (name, description) => {
         try {
-            await window.api.createCollection(name, description);
-            get().fetchCollections();
+            const newCol = await window.api.createCollection(name, description);
+            if (newCol) {
+                set((state) => ({ collections: [...state.collections, newCol] }));
+            } else {
+                get().fetchCollections();
+            }
         } catch (error) {
             console.error('Failed to create collection:', error);
         }
     },
 
     updateCollection: async (id, name, description) => {
+        // Optimistic update
+        set((state) => ({
+            collections: state.collections.map((col) =>
+                col.id === id ? { ...col, name, description: description ?? col.description } : col
+            ),
+        }));
         try {
             await window.api.updateCollection(id, name, description);
-            get().fetchCollections();
         } catch (error) {
             console.error('Failed to update collection:', error);
+            get().fetchCollections(); // Revert/sync on error
         }
     },
 
     deleteCollection: async (id) => {
+        // Optimistic update
+        set((state) => ({
+            collections: state.collections.filter((col) => col.id !== id),
+        }));
         try {
             await window.api.deleteCollection(id);
-            get().fetchCollections();
         } catch (error) {
             console.error('Failed to delete collection:', error);
+            get().fetchCollections();
         }
     },
 
     duplicateCollection: async (id) => {
         try {
-            await window.api.duplicateCollection(id);
-            get().fetchCollections();
+            const duplicated = await window.api.duplicateCollection(id);
+            if (duplicated) {
+                set((state) => ({ collections: [...state.collections, duplicated] }));
+            } else {
+                get().fetchCollections();
+            }
         } catch (error) {
             console.error('Failed to duplicate collection:', error);
         }
@@ -76,43 +94,69 @@ export const useCollectionStore = create<CollectionStore>((set, get) => ({
 
     addItem: async (collectionId, parentId, item) => {
         try {
-            await window.api.addCollectionItem(collectionId, parentId, item);
-            get().fetchCollections();
+            const newItem = await window.api.addCollectionItem(collectionId, parentId, item);
+            if (newItem) {
+                set((state) => ({
+                    collections: state.collections.map((col) => {
+                        if (col.id !== collectionId) return col;
+                        return {
+                            ...col,
+                            items: insertItemIntoTree(col.items || [], parentId, newItem),
+                        };
+                    }),
+                }));
+            } else {
+                get().fetchCollections();
+            }
         } catch (error) {
             console.error('Failed to add item:', error);
         }
     },
 
     updateItem: async (item) => {
+        // Optimistic update
+        set((state) => ({
+            collections: state.collections.map((col) => {
+                if (col.id !== item.collectionId) return col;
+                return {
+                    ...col,
+                    items: updateItemInTree(col.items || [], item),
+                };
+            }),
+        }));
         try {
             await window.api.updateCollectionItem(item);
-            get().fetchCollections();
         } catch (error) {
             console.error('Failed to update item:', error);
+            get().fetchCollections();
         }
     },
 
     deleteItem: async (id) => {
+        // Optimistic update
+        set((state) => ({
+            collections: state.collections.map((col) => ({
+                ...col,
+                items: removeItemFromTree(col.items || [], id),
+            })),
+        }));
         try {
             await window.api.deleteCollectionItem(id);
-            get().fetchCollections();
         } catch (error) {
             console.error('Failed to delete item:', error);
+            get().fetchCollections();
         }
     },
 
     renameItem: async (item, newName) => {
-        try {
-            await window.api.updateCollectionItem({ ...item, name: newName });
-            get().fetchCollections();
-        } catch (error) {
-            console.error('Failed to rename item:', error);
-        }
+        const updatedItem = { ...item, name: newName };
+        get().updateItem(updatedItem);
     },
 
     moveItem: async (itemId, newParentId, newSortOrder) => {
         try {
             await window.api.moveCollectionItem(itemId, newParentId, newSortOrder);
+            // Sync tree once move completes cleanly
             get().fetchCollections();
         } catch (error) {
             console.error('Failed to move item:', error);
@@ -122,6 +166,7 @@ export const useCollectionStore = create<CollectionStore>((set, get) => ({
     reorderItems: async (items) => {
         try {
             await window.api.reorderCollectionItems(items);
+            // Reorder is complex; sync tree
             get().fetchCollections();
         } catch (error) {
             console.error('Failed to reorder items:', error);
@@ -140,3 +185,43 @@ export const useCollectionStore = create<CollectionStore>((set, get) => ({
         });
     },
 }));
+
+// ─── Helper functions for optimistic tree updates ───
+
+function insertItemIntoTree(items: CollectionItem[], parentId: string | null, newItem: CollectionItem): CollectionItem[] {
+    if (!parentId) {
+        return [...items, newItem];
+    }
+    return items.map((item) => {
+        if (item.id === parentId) {
+            return { ...item, children: [...(item.children || []), newItem] };
+        }
+        if (item.children && item.children.length > 0) {
+            return { ...item, children: insertItemIntoTree(item.children, parentId, newItem) };
+        }
+        return item;
+    });
+}
+
+function updateItemInTree(items: CollectionItem[], updatedItem: CollectionItem): CollectionItem[] {
+    return items.map((item) => {
+        if (item.id === updatedItem.id) {
+            return { ...item, ...updatedItem, children: item.children };
+        }
+        if (item.children && item.children.length > 0) {
+            return { ...item, children: updateItemInTree(item.children, updatedItem) };
+        }
+        return item;
+    });
+}
+
+function removeItemFromTree(items: CollectionItem[], id: string): CollectionItem[] {
+    return items
+        .filter((item) => item.id !== id)
+        .map((item) => {
+            if (item.children && item.children.length > 0) {
+                return { ...item, children: removeItemFromTree(item.children, id) };
+            }
+            return item;
+        });
+}

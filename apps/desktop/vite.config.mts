@@ -21,15 +21,18 @@ export default defineConfig({
             },
         },
         sourcemap: false,
-        cssMinify: true,
+        cssCodeSplit: true,
         rollupOptions: {
             output: {
                 manualChunks(id) {
                     if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
-                        return 'react';
+                        return 'vendor-react';
                     }
                     if (id.includes('node_modules/zustand')) {
-                        return 'zustand';
+                        return 'vendor-state';
+                    }
+                    if (id.includes('node_modules/axios') || id.includes('node_modules/ws')) {
+                        return 'vendor-network';
                     }
                 },
             },

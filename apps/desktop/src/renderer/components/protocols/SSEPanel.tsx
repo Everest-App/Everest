@@ -51,57 +51,97 @@ export function SSEPanel() {
 
     return (
         <div className="protocol-panel">
-            <div className="url-bar">
-                <span style={{ fontWeight: 700, color: 'var(--method-options)', fontSize: 13 }}>SSE</span>
-                <input className="url-input" placeholder="https://api.example.com/events"
-                    value={url} onChange={(e) => setUrl(e.target.value)} disabled={connected} />
-                {connected ? (
-                    <button className="send-btn" style={{ background: 'var(--method-delete)' }} onClick={handleDisconnect}>
-                        Disconnect
-                    </button>
-                ) : (
-                    <button className="send-btn" onClick={handleConnect} disabled={!url}>Connect</button>
-                )}
-            </div>
-
-            {/* Event log */}
-            <div className="ws-log" ref={logRef}>
-                {events.length === 0 && (
-                    <div className="empty-state" style={{ height: 150 }}>
-                        <div className="empty-state-icon"><SFIcon name="antenna.radiowaves.left.and.right" size={28} /></div>
-                        <div className="empty-state-sub">Connect to an SSE endpoint</div>
-                    </div>
-                )}
-                {events.map((event) => (
-                    <div key={event.id} className="ws-message received">
-                        <div className="ws-message-meta">
-                            <span className="ws-message-dir" style={{
-                                color: eventColors[event.eventType] || 'var(--accent-primary)',
-                            }}>
-                                {event.eventType === 'open' ? <SFIcon name="bolt.fill" size={11} /> : event.eventType === 'close' ? <SFIcon name="powerplug.fill" size={11} /> :
-                                    event.eventType === 'error' ? <SFIcon name="xmark.circle.fill" size={11} /> : '↓'}
-                            </span>
-                            <span className="ws-message-type">{event.eventType}</span>
-                            {event.lastEventId && <span className="ws-message-type" style={{ opacity: 0.6 }}>id: {event.lastEventId}</span>}
-                            <span className="ws-message-time">
-                                {new Date(event.timestamp).toLocaleTimeString()}
-                            </span>
-                        </div>
-                        <pre className="ws-message-data">{event.data}</pre>
-                    </div>
-                ))}
-            </div>
-
-            {/* Stats bar */}
-            {events.length > 0 && (
-                <div style={{
-                    padding: '4px 12px', borderTop: '1px solid var(--border-primary)',
-                    fontSize: 11, color: 'var(--text-tertiary)', display: 'flex', gap: 16,
-                }}>
-                    <span>Events: <strong>{events.filter(e => !['open', 'close', 'error'].includes(e.eventType)).length}</strong></span>
-                    <span>Status: <strong style={{ color: connected ? 'var(--method-get)' : 'var(--text-tertiary)' }}>{connected ? 'Connected' : 'Disconnected'}</strong></span>
+            {/* Connection Control Island */}
+            <div className="request-section" style={{ minHeight: 64, display: 'flex', flexDirection: 'column' }}>
+                <div className="url-bar">
+                    <span className="protocol-badge sse">SSE</span>
+                    <input
+                        className="url-input"
+                        placeholder="https://api.example.com/events"
+                        value={url}
+                        onChange={(e) => setUrl(e.target.value)}
+                        disabled={connected}
+                        onKeyDown={(e) => { if (e.key === 'Enter' && !connected) handleConnect(); }}
+                    />
+                    {connected ? (
+                        <button className="send-btn" style={{ background: 'var(--method-delete)' }} onClick={handleDisconnect}>
+                            <SFIcon name="powerplug.fill" size={12} style={{ marginRight: 6 }} />
+                            Disconnect
+                        </button>
+                    ) : (
+                        <button className="send-btn" onClick={handleConnect} disabled={!url}>
+                            <SFIcon name="bolt.fill" size={12} style={{ marginRight: 6 }} />
+                            Connect Stream
+                        </button>
+                    )}
                 </div>
-            )}
+            </div>
+
+            <div style={{ height: 8 }} />
+
+            {/* Event Log Island */}
+            <div className="response-section" style={{ flex: 1, minHeight: 250, display: 'flex', flexDirection: 'column' }}>
+                <div className="response-header" style={{ padding: '8px 14px', borderBottom: '1px solid var(--border-primary)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>
+                        <SFIcon name="antenna.radiowaves.left.and.right" size={14} />
+                        <span>Event Stream Log</span>
+                        {events.length > 0 && <span className="badge">{events.length}</span>}
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <span className="mock-status-badge" style={{
+                            color: connected ? 'var(--method-get)' : 'var(--text-tertiary)',
+                            background: connected ? 'rgba(74, 222, 128, 0.1)' : 'var(--surface)'
+                        }}>
+                            ● {connected ? 'Streaming' : 'Disconnected'}
+                        </span>
+                        {events.length > 0 && (
+                            <button
+                                className="toolbar-btn"
+                                onClick={() => setEvents([])}
+                                title="Clear event log"
+                                style={{ fontSize: 11 }}
+                            >
+                                <SFIcon name="trash" size={11} style={{ marginRight: 4 }} />
+                                Clear
+                            </button>
+                        )}
+                    </div>
+                </div>
+
+                {/* Event Cards */}
+                <div className="ws-log" ref={logRef} style={{ flex: 1, padding: 'var(--space-md)' }}>
+                    {events.length === 0 && (
+                        <div className="empty-state" style={{ height: 180 }}>
+                            <div className="empty-state-icon"><SFIcon name="antenna.radiowaves.left.and.right" size={28} /></div>
+                            <div className="empty-state-sub">Connect to an SSE endpoint to receive real-time server events</div>
+                        </div>
+                    )}
+                    {events.map((event) => (
+                        <div key={event.id} className="ws-message received">
+                            <div className="ws-message-meta">
+                                <span className="ws-message-dir" style={{
+                                    color: eventColors[event.eventType] || 'var(--accent-primary)',
+                                }}>
+                                    {event.eventType === 'open' ? <SFIcon name="bolt.fill" size={11} /> :
+                                     event.eventType === 'close' ? <SFIcon name="powerplug.fill" size={11} /> :
+                                     event.eventType === 'error' ? <SFIcon name="xmark.circle.fill" size={11} /> : '↓'}
+                                </span>
+                                <span className="ws-message-type">{event.eventType}</span>
+                                {event.lastEventId && (
+                                    <span className="ws-message-type" style={{ opacity: 0.7, color: 'var(--accent-primary)' }}>
+                                        id: {event.lastEventId}
+                                    </span>
+                                )}
+                                <span className="ws-message-time">
+                                    {new Date(event.timestamp).toLocaleTimeString()}
+                                </span>
+                            </div>
+                            <pre className="ws-message-data">{event.data}</pre>
+                        </div>
+                    ))}
+                </div>
+            </div>
         </div>
     );
 }

@@ -54,40 +54,12 @@ export class PmApiBuilder {
                 requestName: this.context.info.requestName,
                 requestId: this.context.info.requestId
             },
-            
-            // Testing
-            test: (name: string, fn: () => void) => {
-                const startTime = performance.now();
-                try {
-                    fn();
-                    this.assertions.push({
-                        name,
-                        passed: true,
-                        durationMs: performance.now() - startTime
-                    });
-                } catch (err: any) {
-                    this.assertions.push({
-                        name,
-                        passed: false,
-                        error: err.message || String(err),
-                        stack: err.stack,
-                        durationMs: performance.now() - startTime
-                    });
-                }
-            },
-            expect: (value: any) => createExpectChain(value, this.assertions),
-            
-            // Scope APIs
-            variables: this.createScopeApi('local', true), // reads cascade, writes local
-            environment: this.createScopeApi('environment'),
-            collectionVariables: this.createScopeApi('collection'),
-            globals: this.createScopeApi('global'),
-            iterationData: this.createReadOnlyScopeApi('data'),
-            
+
             // Execution Control
             execution: {
                 setNextRequest: (requestNameOrId: string | null) => {
                     this.nextRequest = requestNameOrId;
+                    this.resolver.set('__setNextRequest', requestNameOrId ?? '', 'local');
                 }
             },
             

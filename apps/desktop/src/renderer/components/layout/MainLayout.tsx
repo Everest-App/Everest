@@ -1,21 +1,29 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { useState, useCallback, useRef, useEffect, lazy, Suspense } from 'react';
+import { useTranslation } from '../../i18n/useTranslation';
 import { Sidebar } from './Sidebar';
 import { TabBar } from './TabBar';
 import { RequestPanel } from '../request/RequestPanel';
 import { ResponsePanel } from '../response/ResponsePanel';
-import { GraphQLPanel } from '../protocols/GraphQLPanel';
-import { WebSocketPanel } from '../protocols/WebSocketPanel';
-import { SSEPanel } from '../protocols/SSEPanel';
-import { MockServerPanel } from '../mock/MockServerPanel';
-import { RunnerPanel } from '../runner/RunnerPanel';
 import { useThemeStore } from '../../store/theme-store';
 import { useRunnerStore } from '../../store/runner-store';
-import { useLanguageStore } from '../../store/language-store';
 import { AppIcon } from '../common/AppIcon';
 import { SFIcon } from '../common/SFIcon';
 
+// ── Lazy-loaded protocol & heavy panels ──
+const GraphQLPanel = lazy(() => import('../protocols/GraphQLPanel').then(m => ({ default: m.GraphQLPanel })));
+const WebSocketPanel = lazy(() => import('../protocols/WebSocketPanel').then(m => ({ default: m.WebSocketPanel })));
+const SSEPanel = lazy(() => import('../protocols/SSEPanel').then(m => ({ default: m.SSEPanel })));
+const MockServerPanel = lazy(() => import('../mock/MockServerPanel').then(m => ({ default: m.MockServerPanel })));
+const RunnerPanel = lazy(() => import('../runner/RunnerPanel').then(m => ({ default: m.RunnerPanel })));
+
 type ProtocolMode = 'http' | 'graphql' | 'websocket' | 'sse' | 'mock';
+
+// ── Panel Fallback Loading Indicator ──
+const PanelFallback = () => (
+    <div className="flex h-full w-full items-center justify-center text-xs text-slate-400">
+        Loading panel...
+    </div>
+);
 
 // ── Response Panel Resize Constants ──
 const RESPONSE_HEIGHT_KEY = 'response-panel-height';
@@ -54,7 +62,6 @@ function getStoredSidebarWidth(): number {
 export function MainLayout() {
     const { t } = useTranslation();
     const { theme, toggleTheme } = useThemeStore();
-    const { language, setLanguage } = useLanguageStore();
     const [protocolMode, setProtocolMode] = useState<ProtocolMode>('http');
     const { isOpen: runnerOpen, openRunner, closeRunner } = useRunnerStore();
 
@@ -76,10 +83,6 @@ export function MainLayout() {
 
     const handleOpenRunner = (collectionId?: string, folderId?: string, folderName?: string) => {
         openRunner(collectionId, folderId, folderName);
-    };
-
-    const toggleLanguage = () => {
-        setLanguage(language === 'en' ? 'fa' : 'en');
     };
 
     // ── Response resize: mouse down ──
@@ -191,9 +194,6 @@ export function MainLayout() {
                         <AppIcon size={24} className="brand-icon" />
                         <span className="sidebar-title">{t('app.title')}</span>
                         <div className="sidebar-header-actions">
-                            <button className="lang-toggle" onClick={toggleLanguage} title={t('settings.language')}>
-                                {language === 'en' ? 'FA' : 'EN'}
-                            </button>
                             <button className="theme-toggle" onClick={toggleTheme} title={t('settings.toggleTheme')}>
                                 {theme === 'dark' ? <SFIcon name="sun.max.fill" size={13} /> : <SFIcon name="moon.fill" size={13} />}
                             </button>
@@ -212,7 +212,9 @@ export function MainLayout() {
 
                 <div className="main-content">
                     {runnerOpen ? (
-                        <RunnerPanel onClose={closeRunner} />
+                        <Suspense fallback={<PanelFallback />}>
+                            <RunnerPanel onClose={closeRunner} />
+                        </Suspense>
                     ) : (
                         <>
                             {/* Protocol & Tabs Island */}
@@ -249,25 +251,33 @@ export function MainLayout() {
 
                             {protocolMode === 'graphql' && (
                                 <div className="content-area">
-                                    <GraphQLPanel />
+                                    <Suspense fallback={<PanelFallback />}>
+                                        <GraphQLPanel />
+                                    </Suspense>
                                 </div>
                             )}
 
                             {protocolMode === 'websocket' && (
                                 <div className="content-area">
-                                    <WebSocketPanel />
+                                    <Suspense fallback={<PanelFallback />}>
+                                        <WebSocketPanel />
+                                    </Suspense>
                                 </div>
                             )}
 
                             {protocolMode === 'sse' && (
                                 <div className="content-area">
-                                    <SSEPanel />
+                                    <Suspense fallback={<PanelFallback />}>
+                                        <SSEPanel />
+                                    </Suspense>
                                 </div>
                             )}
 
                             {protocolMode === 'mock' && (
                                 <div className="content-area">
-                                    <MockServerPanel />
+                                    <Suspense fallback={<PanelFallback />}>
+                                        <MockServerPanel />
+                                    </Suspense>
                                 </div>
                             )}
                         </>

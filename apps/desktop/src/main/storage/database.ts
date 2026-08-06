@@ -87,11 +87,11 @@ export async function initDatabase(): Promise<void> {
     // Run migrations
     runMigrations();
 
-    // Auto-save every 30 seconds (only if dirty)
+    // Auto-save every 5 seconds (only if dirty)
     if (autoSaveIntervalId) {
         clearInterval(autoSaveIntervalId);
     }
-    autoSaveIntervalId = setInterval(autoSave, 30000);
+    autoSaveIntervalId = setInterval(autoSave, 5000);
 
     // Save on app quit
     app.on('before-quit', () => {

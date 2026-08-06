@@ -1,29 +1,80 @@
-import { RequestConfig, CodeGenTarget, CodeGenResult, KeyValuePair } from '@api-platform/core';
+import { RequestConfig, CodeGenTarget, CodeGenResult, KeyValuePair, interpolateRequestConfig } from '@api-platform/core';
 import { buildFinalUrl } from '../utils/url-builder';
-import { interpolateRequestConfig } from '@api-platform/core';
 import { getGlobalVariables } from './environment-service';
+
+export interface NormalizedCodegenContext {
+    config: RequestConfig;
+    fullUrl: string;
+    method: string;
+    headers: Record<string, string>;
+    enabledHeaderPairs: KeyValuePair[];
+    enabledParamPairs: KeyValuePair[];
+    authHeader?: { key: string; value: string };
+    basicAuth?: { username: string; password?: string };
+}
+
+/**
+ * Extract and normalize request metadata (URL, headers, auth) ONCE for all code generators.
+ */
+export function buildNormalizedContext(config: RequestConfig): NormalizedCodegenContext {
+    const fullUrl = buildFinalUrl(config);
+    const enabledHeaderPairs = config.headers.filter(h => h.enabled && h.key);
+    const enabledParamPairs = config.params.filter(p => p.enabled && p.key);
+
+    const headers: Record<string, string> = {};
+    for (const h of enabledHeaderPairs) {
+        headers[h.key] = h.value;
+    }
+
+    let authHeader: { key: string; value: string } | undefined;
+    let basicAuth: { username: string; password?: string } | undefined;
+
+    if (config.auth.type === 'bearer' && config.auth.bearer?.token) {
+        authHeader = { key: 'Authorization', value: `Bearer ${config.auth.bearer.token}` };
+        headers['Authorization'] = authHeader.value;
+    } else if (config.auth.type === 'basic' && config.auth.basic?.username) {
+        basicAuth = { username: config.auth.basic.username, password: config.auth.basic.password };
+        const encoded = btoa(`${basicAuth.username}:${basicAuth.password || ''}`);
+        headers['Authorization'] = `Basic ${encoded}`;
+    } else if (config.auth.type === 'api-key' && config.auth.apiKey?.key) {
+        if (config.auth.apiKey.addTo === 'header') {
+            authHeader = { key: config.auth.apiKey.key, value: config.auth.apiKey.value || '' };
+            headers[authHeader.key] = authHeader.value;
+        }
+    }
+
+    return {
+        config,
+        fullUrl,
+        method: config.method,
+        headers,
+        enabledHeaderPairs,
+        enabledParamPairs,
+        authHeader,
+        basicAuth,
+    };
+}
 
 /**
  * Generate code snippet from a request configuration.
  */
 export function generateCode(rawConfig: RequestConfig, target: CodeGenTarget): CodeGenResult {
     // Variable interpolation awareness
-    // We try to interpolate with global variables for now. 
-    // In a fuller implementation, environment ID could be passed here.
     const config = interpolateRequestConfig(rawConfig, getGlobalVariables(), [], []);
+    const context = buildNormalizedContext(config);
 
-    const generators: Record<CodeGenTarget, (c: RequestConfig) => string> = {
+    const generators: Record<CodeGenTarget, (ctx: NormalizedCodegenContext) => string> = {
         'curl': generateCurl,
         'fetch': generateFetch,
-        'axios': generateAxios,
-        'python-requests': generatePythonRequests,
-        'csharp': generateCSharp,
-        'dotnet': generateDotNet,
-        'restsharp': generateRestSharp,
-        'java': generateJava,
-        'go': generateGo,
-        'php': generatePHP,
-        'dart': generateDart,
+        'axios': (ctx) => generateAxios(ctx.config),
+        'python-requests': (ctx) => generatePythonRequests(ctx.config),
+        'csharp': (ctx) => generateCSharp(ctx.config),
+        'dotnet': (ctx) => generateDotNet(ctx.config),
+        'restsharp': (ctx) => generateRestSharp(ctx.config),
+        'java': (ctx) => generateJava(ctx.config),
+        'go': (ctx) => generateGo(ctx.config),
+        'php': (ctx) => generatePHP(ctx.config),
+        'dart': (ctx) => generateDart(ctx.config),
     };
 
     const generator = generators[target];
@@ -33,7 +84,7 @@ export function generateCode(rawConfig: RequestConfig, target: CodeGenTarget): C
 
     return {
         target,
-        code: generator(config),
+        code: generator(context),
     };
 }
 
@@ -50,29 +101,26 @@ function buildFullUrl(config: RequestConfig): string {
 }
 
 // ─── cURL ────────────────────────────────────────────────────────
-function generateCurl(config: RequestConfig): string {
+function generateCurl(ctx: NormalizedCodegenContext): string {
+    const { config, fullUrl, enabledHeaderPairs, authHeader, basicAuth } = ctx;
     const parts: string[] = ['curl'];
 
     if (config.method !== 'GET') {
         parts.push(`-X ${config.method}`);
     }
 
-    parts.push(`'${buildFullUrl(config)}'`);
+    parts.push(`'${fullUrl}'`);
 
     // Headers
-    for (const h of getEnabledHeaders(config)) {
+    for (const h of enabledHeaderPairs) {
         parts.push(`-H '${h.key}: ${h.value}'`);
     }
 
     // Auth headers
-    if (config.auth.type === 'bearer' && config.auth.bearer?.token) {
-        parts.push(`-H 'Authorization: Bearer ${config.auth.bearer.token}'`);
-    } else if (config.auth.type === 'basic' && config.auth.basic?.username) {
-        parts.push(`-u '${config.auth.basic.username}:${config.auth.basic.password || ''}'`);
-    } else if (config.auth.type === 'api-key' && config.auth.apiKey?.key) {
-        if (config.auth.apiKey.addTo === 'header') {
-            parts.push(`-H '${config.auth.apiKey.key}: ${config.auth.apiKey.value || ''}'`);
-        }
+    if (authHeader) {
+        parts.push(`-H '${authHeader.key}: ${authHeader.value}'`);
+    } else if (basicAuth) {
+        parts.push(`-u '${basicAuth.username}:${basicAuth.password || ''}'`);
     }
 
     // Body
@@ -97,33 +145,17 @@ function generateCurl(config: RequestConfig): string {
 }
 
 // ─── Fetch ───────────────────────────────────────────────────────
-function generateFetch(config: RequestConfig): string {
-    const headers: Record<string, string> = {};
-    for (const h of getEnabledHeaders(config)) {
-        headers[h.key] = h.value;
-    }
-
-    if (config.auth.type === 'bearer' && config.auth.bearer?.token) {
-        headers['Authorization'] = `Bearer ${config.auth.bearer.token}`;
-    } else if (config.auth.type === 'basic' && config.auth.basic?.username) {
-        headers['Authorization'] = `Basic ${btoa(`${config.auth.basic.username}:${config.auth.basic.password || ''}`)}`;
-    }
-
-    const options: any = {
-        method: config.method,
-    };
-
-    if (Object.keys(headers).length > 0) {
-        options.headers = headers;
-    }
+function generateFetch(ctx: NormalizedCodegenContext): string {
+    const { config, fullUrl, headers } = ctx;
+    const reqHeaders = { ...headers };
 
     let bodyLine = '';
     let preCode = '';
     if (config.body.type === 'json' && config.body.raw) {
-        headers['Content-Type'] = 'application/json';
+        reqHeaders['Content-Type'] = 'application/json';
         bodyLine = `  body: JSON.stringify(${config.body.raw}),\n`;
     } else if (config.body.type === 'xml' && config.body.raw) {
-        headers['Content-Type'] = 'application/xml';
+        reqHeaders['Content-Type'] = 'application/xml';
         bodyLine = `  body: '${config.body.raw}',\n`;
     } else if (config.body.type === 'form-data' && config.body.formData) {
         const fields = config.body.formData.filter(f => f.enabled && f.key);
@@ -138,7 +170,7 @@ function generateFetch(config: RequestConfig): string {
     } else if (config.body.type === 'x-www-form-urlencoded' && config.body.urlencoded) {
         const fields = config.body.urlencoded.filter(f => f.enabled && f.key);
         if (fields.length > 0) {
-            headers['Content-Type'] = 'application/x-www-form-urlencoded';
+            reqHeaders['Content-Type'] = 'application/x-www-form-urlencoded';
             preCode = `const params = new URLSearchParams();\n`;
             for (const f of fields) {
                 preCode += `params.append('${f.key}', '${f.value}');\n`;
@@ -151,10 +183,10 @@ function generateFetch(config: RequestConfig): string {
     }
 
     let code = preCode;
-    code += `fetch('${buildFullUrl(config)}', {\n`;
+    code += `fetch('${fullUrl}', {\n`;
     code += `  method: '${config.method}',\n`;
-    if (Object.keys(headers).length > 0) {
-        code += `  headers: ${JSON.stringify(headers, null, 4).replace(/\n/g, '\n  ')},\n`;
+    if (Object.keys(reqHeaders).length > 0) {
+        code += `  headers: ${JSON.stringify(reqHeaders, null, 4).replace(/\n/g, '\n  ')},\n`;
     }
     code += bodyLine;
     code += `})\n`;

@@ -123,14 +123,25 @@ export class CollectionRunner extends EventEmitter {
                     }
 
                     // Handle pm.execution.setNextRequest flow control
-                    const nextReq = result.testScriptResult?.mutations?.local?.find(m => m.key === '__setNextRequest')?.value 
-                                 || result.preRequestResult?.mutations?.local?.find(m => m.key === '__setNextRequest')?.value;
-                    
-                    // Actually, setNextRequest is usually stored differently. We didn't expose it in mutations.
-                    // We need to fetch it from pmApi.getNextRequest. Wait, we didn't add it to mutations.
-                    // For now, assume sequential flow unless we update the PM API to return it.
-                    // In our PM API we added `pm.execution.setNextRequest()`, but we need to extract it.
-                    // We'll just stick to sequential for this iteration to keep it simple, or we can check the engine.
+                    const nextReqTarget = result.testScriptResult?.mutations?.local?.find(m => m.key === '__setNextRequest')?.value 
+                                       || result.preRequestResult?.mutations?.local?.find(m => m.key === '__setNextRequest')?.value;
+
+                    if (nextReqTarget === null || nextReqTarget === '') {
+                        // setNextRequest(null) -> stop collection run after this request
+                        break;
+                    } else if (typeof nextReqTarget === 'string' && nextReqTarget.trim()) {
+                        // O(1) lookup: find index of requested next item by ID or Name
+                        const targetIndex = this.executionItems.findIndex(
+                            e => e.item.id === nextReqTarget || e.item.name.toLowerCase() === nextReqTarget.toLowerCase()
+                        );
+                        if (targetIndex !== -1) {
+                            this.currentItemIndex = targetIndex;
+                        } else {
+                            this.currentItemIndex++;
+                        }
+                    } else {
+                        this.currentItemIndex++;
+                    }
 
                     // Check stop on error
                     if (this.config.stopOnError && (result.error || result.testSummary.failed > 0)) {
@@ -138,8 +149,6 @@ export class CollectionRunner extends EventEmitter {
                         break;
                     }
 
-                    this.currentItemIndex++;
-                    
                     // Delay
                     if (this.config.delayMs && this.config.delayMs > 0 && this.currentItemIndex < this.executionItems.length) {
                         await new Promise(r => setTimeout(r, this.config.delayMs));

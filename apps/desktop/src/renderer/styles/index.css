@@ -3080,6 +3080,51 @@ body {
   overflow: hidden;
 }
 
+.protocol-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: var(--radius-control);
+  letter-spacing: 0.05em;
+  user-select: none;
+}
+
+.protocol-badge.gql {
+  color: oklch(0.7 0.18 330);
+  background: oklch(0.7 0.18 330 / 0.12);
+}
+
+.protocol-badge.ws {
+  color: var(--method-get);
+  background: oklch(0.7 0.15 155 / 0.12);
+}
+
+.protocol-badge.sse {
+  color: var(--method-options);
+  background: oklch(0.7 0.12 210 / 0.12);
+}
+
+.protocol-badge.mock {
+  color: var(--accent-primary);
+  background: oklch(0.63 0.19 277 / 0.12);
+}
+
+.section-tab-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-primary);
+  background: var(--bg-secondary);
+}
+
 /* ─── GraphQL Schema ────────────────────────────────────────── */
 .gql-schema {
   display: flex;

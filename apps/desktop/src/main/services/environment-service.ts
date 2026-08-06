@@ -1,5 +1,5 @@
 import { randomUUID as uuidv4 } from 'crypto';
-import { getDb, saveDatabase } from '../storage/database';
+import { getDb, markDirty } from '../storage/database';
 import { Environment, Variable } from '@api-platform/core';
 
 // ─── Environments CRUD ───────────────────────────────────────────
@@ -29,7 +29,7 @@ export function createEnvironment(name: string): Environment {
         [id, name, '[]', now, now]
     );
 
-    saveDatabase();
+    markDirty();
 
     return {
         id,
@@ -46,13 +46,13 @@ export function updateEnvironment(env: Environment): void {
         'UPDATE environments SET name = ?, variables_json = ?, updated_at = ? WHERE id = ?',
         [env.name, JSON.stringify(env.variables), Date.now(), env.id]
     );
-    saveDatabase();
+    markDirty();
 }
 
 export function deleteEnvironment(id: string): void {
     const db = getDb();
     db.run('DELETE FROM environments WHERE id = ?', [id]);
-    saveDatabase();
+    markDirty();
 }
 
 // ─── Global Variables ────────────────────────────────────────────
@@ -67,7 +67,7 @@ export function getGlobalVariables(): Variable[] {
 export function setGlobalVariables(vars: Variable[]): void {
     const db = getDb();
     db.run('UPDATE global_variables SET variables_json = ? WHERE id = 1', [JSON.stringify(vars)]);
-    saveDatabase();
+    markDirty();
 }
 
 /**

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { MainLayout } from './components/layout/MainLayout';
 import { useThemeStore } from './store/theme-store';
-import { useLanguageStore } from './store/language-store';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { SaveToFolderModal } from './components/collections/SaveToFolderModal';
 import { useTabStore } from './store/tab-store';
@@ -10,20 +9,15 @@ import { DEFAULT_HTTP_METHOD, DEFAULT_BODY_TYPE, DEFAULT_AUTH_TYPE } from '@api-
 
 export default function App() {
     const { theme, setTheme } = useThemeStore();
-    const { language } = useLanguageStore();
     const { tabs, activeTabId, markAsSaved, addTab, removeTab } = useTabStore();
     const [showSaveModal, setShowSaveModal] = useState(false);
     const [showAboutModal, setShowAboutModal] = useState(false);
 
     useEffect(() => {
         document.documentElement.setAttribute('data-theme', theme);
-    }, [theme]);
-
-    useEffect(() => {
-        // Only update lang for font selection — dir is always ltr
-        document.documentElement.setAttribute('lang', language);
+        document.documentElement.setAttribute('lang', 'en');
         document.documentElement.setAttribute('dir', 'ltr');
-    }, [language]);
+    }, [theme]);
 
     useEffect(() => {
         if (!window.api?.onMenuAction) return;

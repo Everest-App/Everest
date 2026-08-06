@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../../i18n/useTranslation';
 import { v4 as uuidv4 } from 'uuid';
 import { useEnvironmentStore } from '../../store/environment-store';
 import { Environment, Variable } from '@api-platform/core';
@@ -214,13 +214,15 @@ export function EnvironmentPanel({ highlightVarName }: EnvironmentPanelProps) {
                 )}
             </div>
 
-            {/* Create Button */}
+            {/* Create & Import Buttons */}
             <div style={{ padding: '4px 12px', display: 'flex', gap: '8px' }}>
-                <button className="kv-add-btn" style={{ flex: 1 }} onClick={() => setShowCreate(!showCreate)}>
-                    {t('environment.newEnvironment')}
+                <button className="kv-add-btn" style={{ flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 4 }} onClick={() => setShowCreate(!showCreate)}>
+                    <SFIcon name="plus" size={11} />
+                    <span>{t('environment.newEnvironment')}</span>
                 </button>
-                <button className="kv-add-btn" style={{ flex: 1 }} onClick={handleImportEnv}>
-                    {t('environment.importFromPostman')}
+                <button className="kv-add-btn" style={{ flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 4 }} onClick={handleImportEnv}>
+                    <SFIcon name="square.and.arrow.up" size={11} />
+                    <span>{t('environment.importFromPostman')}</span>
                 </button>
             </div>
 

@@ -50,6 +50,11 @@ interface TabStore {
     removeTab: (id: string) => void;
     setActiveTab: (id: string) => void;
 
+    // Deep Interface: Centralized tab & request mutation engine
+    updateActiveTab: (patch: Partial<Omit<Tab, 'id' | 'request'>>) => void;
+    updateActiveRequest: (patch: Partial<RequestConfig> | ((prev: RequestConfig) => Partial<RequestConfig>)) => void;
+
+    // Convenience delegates wrapping updateActiveRequest
     updateMethod: (method: HttpMethod) => void;
     updateUrl: (url: string) => void;
     updateParams: (params: RequestConfig['params']) => void;
@@ -103,194 +108,128 @@ export const useTabStore = create<TabStore>((set, get) => {
 
         setActiveTab: (id: string) => set({ activeTabId: id }),
 
-        updateMethod: (method) =>
+        // ── Deep Core Mutation Engine ──
+
+        updateActiveTab: (patch) => {
             set((state) => ({
                 tabs: state.tabs.map((t) =>
-                    t.id === state.activeTabId
-                        ? { ...t, request: { ...t.request, method }, title: `${method} ${t.request.url || 'New Request'}` }
-                        : t
+                    t.id === state.activeTabId ? { ...t, ...patch } : t
                 ),
-            })),
+            }));
+        },
+
+        updateActiveRequest: (patchArg) => {
+            set((state) => {
+                const activeIdx = state.tabs.findIndex((t) => t.id === state.activeTabId);
+                if (activeIdx === -1) return state;
+
+                const currentTab = state.tabs[activeIdx];
+                const patch = typeof patchArg === 'function' ? patchArg(currentTab.request) : patchArg;
+                const updatedRequest = { ...currentTab.request, ...patch };
+
+                const newTitle = patch.method || patch.url !== undefined
+                    ? `${updatedRequest.method} ${updatedRequest.url || 'New Request'}`
+                    : currentTab.title;
+
+                const updatedTab = {
+                    ...currentTab,
+                    request: updatedRequest,
+                    title: newTitle,
+                };
+
+                const newTabs = [...state.tabs];
+                newTabs[activeIdx] = updatedTab;
+
+                return { tabs: newTabs };
+            });
+        },
+
+        // ── Delegates ──
+
+        updateMethod: (method) => get().updateActiveRequest({ method }),
 
         updateUrl: (url) => {
-            // If this update was triggered by params sync, just update the URL
             if (_syncSource === 'params') {
-                set((state) => ({
-                    tabs: state.tabs.map((t) =>
-                        t.id === state.activeTabId
-                            ? { ...t, request: { ...t.request, url }, title: `${t.request.method} ${url || 'New Request'}` }
-                            : t
-                    ),
-                }));
+                get().updateActiveRequest({ url });
                 return;
             }
 
-            // URL → Params sync
             _syncSource = 'url';
             try {
                 const { baseUrl, params: parsedParams } = parseUrlParams(url);
+                const activeTab = get().tabs.find((t) => t.id === get().activeTabId);
+                if (!activeTab) return;
 
-                set((state) => {
-                    const activeTab = state.tabs.find(t => t.id === state.activeTabId);
-                    if (!activeTab) return state;
+                let newParams = mergeParamsFromUrl(activeTab.request.params, parsedParams);
+                const hasEmptyRow = newParams.some((p) => !p.key && !p.value);
+                if (!hasEmptyRow) {
+                    newParams = [...newParams, { id: uuidv4(), key: '', value: '', enabled: true }];
+                }
 
-                    // Merge parsed params with existing ones (preserve disabled params)
-                    let newParams = mergeParamsFromUrl(activeTab.request.params, parsedParams);
-
-                    // Always keep at least one empty row
-                    const hasEmptyRow = newParams.some(p => !p.key && !p.value);
-                    if (!hasEmptyRow) {
-                        newParams = [...newParams, { id: uuidv4(), key: '', value: '', enabled: true }];
-                    }
-
-                    return {
-                        tabs: state.tabs.map((t) =>
-                            t.id === state.activeTabId
-                                ? {
-                                    ...t,
-                                    request: { ...t.request, url, params: newParams },
-                                    title: `${t.request.method} ${url || 'New Request'}`,
-                                }
-                                : t
-                        ),
-                    };
-                });
+                get().updateActiveRequest({ url, params: newParams });
             } finally {
                 _syncSource = null;
             }
         },
 
         updateParams: (params) => {
-            // If this update was triggered by URL sync, just update the params
             if (_syncSource === 'url') {
-                set((state) => ({
-                    tabs: state.tabs.map((t) =>
-                        t.id === state.activeTabId ? { ...t, request: { ...t.request, params } } : t
-                    ),
-                }));
+                get().updateActiveRequest({ params });
                 return;
             }
 
-            // Params → URL sync
             _syncSource = 'params';
             try {
-                set((state) => {
-                    const activeTab = state.tabs.find(t => t.id === state.activeTabId);
-                    if (!activeTab) return state;
+                const activeTab = get().tabs.find((t) => t.id === get().activeTabId);
+                if (!activeTab) return;
 
-                    const baseUrl = getBaseUrl(activeTab.request.url);
-                    const newUrl = buildUrlFromParams(baseUrl, params);
+                const baseUrl = getBaseUrl(activeTab.request.url);
+                const newUrl = buildUrlFromParams(baseUrl, params);
 
-                    return {
-                        tabs: state.tabs.map((t) =>
-                            t.id === state.activeTabId
-                                ? {
-                                    ...t,
-                                    request: { ...t.request, params, url: newUrl },
-                                    title: `${t.request.method} ${newUrl || 'New Request'}`,
-                                }
-                                : t
-                        ),
-                    };
-                });
+                get().updateActiveRequest({ params, url: newUrl });
             } finally {
                 _syncSource = null;
             }
         },
 
-        updateHeaders: (headers) =>
-            set((state) => ({
-                tabs: state.tabs.map((t) =>
-                    t.id === state.activeTabId ? { ...t, request: { ...t.request, headers } } : t
-                ),
-            })),
+        updateHeaders: (headers) => get().updateActiveRequest({ headers }),
 
         updateBodyType: (type) =>
-            set((state) => ({
-                tabs: state.tabs.map((t) =>
-                    t.id === state.activeTabId
-                        ? { ...t, request: { ...t.request, body: { ...t.request.body, type } } }
-                        : t
-                ),
+            get().updateActiveRequest((req) => ({
+                body: { ...req.body, type },
             })),
 
         updateBodyRaw: (raw) =>
-            set((state) => ({
-                tabs: state.tabs.map((t) =>
-                    t.id === state.activeTabId
-                        ? { ...t, request: { ...t.request, body: { ...t.request.body, raw } } }
-                        : t
-                ),
+            get().updateActiveRequest((req) => ({
+                body: { ...req.body, raw },
             })),
 
         updateBodyFormData: (formData) =>
-            set((state) => ({
-                tabs: state.tabs.map((t) =>
-                    t.id === state.activeTabId
-                        ? { ...t, request: { ...t.request, body: { ...t.request.body, formData } } }
-                        : t
-                ),
+            get().updateActiveRequest((req) => ({
+                body: { ...req.body, formData },
             })),
 
         updateBodyUrlencoded: (urlencoded) =>
-            set((state) => ({
-                tabs: state.tabs.map((t) =>
-                    t.id === state.activeTabId
-                        ? { ...t, request: { ...t.request, body: { ...t.request.body, urlencoded } } }
-                        : t
-                ),
+            get().updateActiveRequest((req) => ({
+                body: { ...req.body, urlencoded },
             })),
 
         updateAuthType: (type) =>
-            set((state) => ({
-                tabs: state.tabs.map((t) =>
-                    t.id === state.activeTabId
-                        ? { ...t, request: { ...t.request, auth: { ...t.request.auth, type } } }
-                        : t
-                ),
+            get().updateActiveRequest((req) => ({
+                auth: { ...req.auth, type },
             })),
 
-        updateAuth: (auth) =>
-            set((state) => ({
-                tabs: state.tabs.map((t) =>
-                    t.id === state.activeTabId ? { ...t, request: { ...t.request, auth } } : t
-                ),
-            })),
+        updateAuth: (auth) => get().updateActiveRequest({ auth }),
 
-        updatePreRequestScript: (script) =>
-            set((state) => ({
-                tabs: state.tabs.map((t) =>
-                    t.id === state.activeTabId ? { ...t, request: { ...t.request, preRequestScript: script } } : t
-                ),
-            })),
+        updatePreRequestScript: (script) => get().updateActiveRequest({ preRequestScript: script }),
 
-        updateTestScript: (script) =>
-            set((state) => ({
-                tabs: state.tabs.map((t) =>
-                    t.id === state.activeTabId ? { ...t, request: { ...t.request, testScript: script } } : t
-                ),
-            })),
+        updateTestScript: (script) => get().updateActiveRequest({ testScript: script }),
 
-        setLoading: (loading) =>
-            set((state) => ({
-                tabs: state.tabs.map((t) =>
-                    t.id === state.activeTabId ? { ...t, loading } : t
-                ),
-            })),
+        setLoading: (loading) => get().updateActiveTab({ loading }),
 
-        setResponse: (response) =>
-            set((state) => ({
-                tabs: state.tabs.map((t) =>
-                    t.id === state.activeTabId ? { ...t, response } : t
-                ),
-            })),
+        setResponse: (response) => get().updateActiveTab({ response }),
 
-        setScriptResults: (scriptResults) =>
-            set((state) => ({
-                tabs: state.tabs.map((t) =>
-                    t.id === state.activeTabId ? { ...t, scriptResults } : t
-                ),
-            })),
+        setScriptResults: (scriptResults) => get().updateActiveTab({ scriptResults }),
 
         loadRequest: (request, name, collectionId, itemId) => {
             const { tabs } = get();

@@ -9,7 +9,7 @@
     "dev:renderer": "vite",
     "dev:main": "wait-on http://localhost:5173 && tsc -p tsconfig.main.json && electron .",
     "build:renderer": "vite build",
-    "build:main": "tsc -p tsconfig.main.json",
+    "build:main": "node esbuild.main.config.mjs",
     "build:copy-assets": "mkdir -p dist/migrations && cp src/main/storage/migrations/*.sql dist/migrations/",
     "build:clean": "rm -rf dist",
     "build": "npm run build:clean && npm run build:renderer && npm run build:main && npm run build:copy-assets",
@@ -22,8 +22,6 @@
   "dependencies": {
     "@api-platform/core": "*",
     "axios": "^1.17.0",
-    "i18next": "^26.3.1",
-    "react-i18next": "^17.0.8",
     "sql.js": "^1.14.1",
     "uuid": "^14.0.0",
     "ws": "^8.21.0"
@@ -37,6 +35,7 @@
     "concurrently": "^10.0.3",
     "electron": "^42.4.0",
     "electron-builder": "^26.15.2",
+    "esbuild": "^0.28.1",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "terser": "^5.48.0",
@@ -87,8 +86,13 @@
         {
           "target": "dmg",
           "arch": [
-            "x64",
             "arm64"
+          ]
+        },
+        {
+          "target": "dmg",
+          "arch": [
+            "x64"
           ]
         }
       ],

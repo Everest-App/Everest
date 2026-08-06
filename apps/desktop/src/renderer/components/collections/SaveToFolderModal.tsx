@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../../i18n/useTranslation';
 import { useCollectionStore } from '../../store/collection-store';
 import { RequestConfig, ResponseData, CollectionItem } from '@api-platform/core';
 import { buildTree } from '../../utils/search-utils';

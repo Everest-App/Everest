@@ -1,5 +1,5 @@
 import { randomUUID as uuidv4 } from 'crypto';
-import { getDb, saveDatabase } from '../storage/database';
+import { getDb, markDirty, saveDatabase } from '../storage/database';
 import { Collection, CollectionItem, RequestConfig, Variable } from '@api-platform/core';
 
 // ─── Collections CRUD ────────────────────────────────────────────
@@ -66,7 +66,7 @@ export function createCollection(name: string, description?: string, preRequestS
         [id, name, description || '', '[]', now, now, preRequestScript || '', testScript || '']
     );
 
-    saveDatabase();
+    markDirty();
 
     return {
         id,
@@ -87,14 +87,14 @@ export function updateCollection(id: string, name: string, description?: string)
         'UPDATE collections SET name = ?, description = ?, updated_at = ? WHERE id = ?',
         [name, description || '', Date.now(), id]
     );
-    saveDatabase();
+    markDirty();
 }
 
 export function deleteCollection(id: string): void {
     const db = getDb();
     db.run('DELETE FROM collection_items WHERE collection_id = ?', [id]);
     db.run('DELETE FROM collections WHERE id = ?', [id]);
-    saveDatabase();
+    markDirty();
 }
 
 export function duplicateCollection(id: string): Collection {
@@ -173,7 +173,7 @@ export function addCollectionItem(
 
     // Update collection timestamp
     db.run('UPDATE collections SET updated_at = ? WHERE id = ?', [Date.now(), collectionId]);
-    saveDatabase();
+    markDirty();
 
     return newItem;
 }
@@ -185,14 +185,14 @@ export function updateCollectionItem(item: CollectionItem): void {
         [item.name, item.parentId, item.sortOrder, item.request ? JSON.stringify(item.request) : null, item.preRequestScript || '', item.testScript || '', item.id]
     );
     db.run('UPDATE collections SET updated_at = ? WHERE id = ?', [Date.now(), item.collectionId]);
-    saveDatabase();
+    markDirty();
 }
 
 export function deleteCollectionItem(id: string): void {
     const db = getDb();
     // Also delete all children recursively
     deleteItemAndChildren(db, id);
-    saveDatabase();
+    markDirty();
 }
 
 function deleteItemAndChildren(db: any, id: string): void {
@@ -248,7 +248,7 @@ export function moveCollectionItem(itemId: string, newParentId: string | null, n
 
     // Update collection timestamp
     db.run('UPDATE collections SET updated_at = ? WHERE id = ?', [Date.now(), collectionId]);
-    saveDatabase();
+    markDirty();
 }
 
 /**
@@ -271,7 +271,7 @@ export function reorderCollectionItems(items: Array<{ id: string; sortOrder: num
     if (collectionId) {
         db.run('UPDATE collections SET updated_at = ? WHERE id = ?', [Date.now(), collectionId]);
     }
-    saveDatabase();
+    markDirty();
 }
 
 /** Get all descendant IDs of an item (for circular reference checks). */
@@ -350,3 +350,95 @@ export function buildItemTree(items: CollectionItem[]): CollectionItem[] {
 
     return roots;
 }
+
+export interface ItemWithAncestors {
+    item: CollectionItem;
+    collectionId: string;
+    collectionPreRequest: string;
+    collectionTest: string;
+    folderPreRequest: string;
+    folderTest: string;
+}
+
+/**
+ * Fetch a single collection item and all ancestor scripts in a single O(depth) lookup.
+ * Replaces O(N*M) full-tree scans during request execution.
+ */
+export function getItemWithAncestors(itemId: string): ItemWithAncestors | null {
+    const db = getDb();
+
+    // 1. Fetch target item
+    const itemResult = db.exec(
+        'SELECT id, collection_id, parent_id, name, type, sort_order, request_json, pre_request_script, test_script FROM collection_items WHERE id = ?',
+        [itemId]
+    );
+
+    if (itemResult.length === 0 || itemResult[0].values.length === 0) {
+        return null;
+    }
+
+    const row = itemResult[0].values[0];
+    const collectionId = row[1] as string;
+    const parentId = row[2] as string | null;
+
+    const item: CollectionItem = {
+        id: row[0] as string,
+        collectionId,
+        parentId,
+        name: row[3] as string,
+        type: row[4] as 'folder' | 'request',
+        sortOrder: row[5] as number,
+        request: row[6] ? JSON.parse(row[6] as string) : undefined,
+        preRequestScript: (row[7] as string) || '',
+        testScript: (row[8] as string) || '',
+    };
+
+    // 2. Fetch collection-level scripts
+    let collectionPreRequest = '';
+    let collectionTest = '';
+    const colResult = db.exec(
+        'SELECT pre_request_script, test_script FROM collections WHERE id = ?',
+        [collectionId]
+    );
+
+    if (colResult.length > 0 && colResult[0].values.length > 0) {
+        const colRow = colResult[0].values[0];
+        collectionPreRequest = (colRow[0] as string) || '';
+        collectionTest = (colRow[1] as string) || '';
+    }
+
+    // 3. Collect ancestor folder scripts (from bottom-up then reverse to top-down)
+    const folderPreScripts: string[] = [];
+    const folderTestScripts: string[] = [];
+
+    let currentParentId = parentId;
+    while (currentParentId) {
+        const parentResult = db.exec(
+            'SELECT parent_id, pre_request_script, test_script FROM collection_items WHERE id = ?',
+            [currentParentId]
+        );
+
+        if (parentResult.length === 0 || parentResult[0].values.length === 0) {
+            break;
+        }
+
+        const parentRow = parentResult[0].values[0];
+        currentParentId = parentRow[0] as string | null;
+
+        const preScript = (parentRow[1] as string) || '';
+        const testScript = (parentRow[2] as string) || '';
+
+        if (preScript) folderPreScripts.unshift(preScript);
+        if (testScript) folderTestScripts.unshift(testScript);
+    }
+
+    return {
+        item,
+        collectionId,
+        collectionPreRequest,
+        collectionTest,
+        folderPreRequest: folderPreScripts.join('\n\n'),
+        folderTest: folderTestScripts.join('\n\n'),
+    };
+}
+

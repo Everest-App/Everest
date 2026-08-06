@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
+import { useTranslation } from '../../i18n/useTranslation';
 import { HistoryPanel } from '../history/HistoryPanel';
 import { CollectionPanel } from '../collections/CollectionPanel';
 import { EnvironmentPanel } from '../environments/EnvironmentPanel';
-import { ImportExportModal } from '../import-export/ImportExportModal';
 import { appEvents, NAVIGATE_TO_VARIABLE } from '../../utils/event-bus';
 import { SFIcon } from '../common/SFIcon';
+
+const ImportExportModal = lazy(() => import('../import-export/ImportExportModal').then(m => ({ default: m.ImportExportModal })));
 
 type SidebarTab = 'collections' | 'environments' | 'history';
 
@@ -65,7 +66,11 @@ export function Sidebar({ onOpenRunner }: SidebarProps) {
                 {activeTab === 'history' && <HistoryPanel />}
             </div>
 
-            {showImportExport && <ImportExportModal onClose={() => setShowImportExport(false)} />}
+            {showImportExport && (
+                <Suspense fallback={null}>
+                    <ImportExportModal onClose={() => setShowImportExport(false)} />
+                </Suspense>
+            )}
         </>
     );
 }

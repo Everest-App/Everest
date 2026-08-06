@@ -1,5 +1,5 @@
 import { getAllCollections } from '../services/collection-service';
-import { getDb, saveDatabase } from '../storage/database';
+import { getDb, markDirty } from '../storage/database';
 import { Variable } from '@api-platform/core';
 
 export class CollectionVariableManager {
@@ -83,7 +83,7 @@ export class CollectionVariableManager {
             this.collectionId
         ]);
         
-        saveDatabase();
+        markDirty();
         this.isModified = false;
     }
 }

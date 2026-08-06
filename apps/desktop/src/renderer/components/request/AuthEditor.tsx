@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../../i18n/useTranslation';
 import { useTabStore } from '../../store/tab-store';
 import { AUTH_TYPES } from '@api-platform/core';
 import { AuthType, AuthConfig } from '@api-platform/core';

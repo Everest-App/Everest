@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../../i18n/useTranslation';
 import { useTabStore } from '../../store/tab-store';
 import { useHistoryStore } from '../../store/history-store';
 import { useEnvironmentStore } from '../../store/environment-store';

@@ -14,6 +14,45 @@ export interface SandboxOptions {
 
 export class ScriptSandbox {
     private defaultTimeout = 5000;
+    private static sharedContext: vm.Context | null = null;
+
+    private getOrCreateBaseContext(): vm.Context {
+        if (!ScriptSandbox.sharedContext) {
+            const cryptoObj = {
+                randomUUID: () => require('crypto').randomUUID()
+            };
+            const baseSandbox: any = {
+                JSON,
+                Date,
+                Math,
+                Array,
+                Object,
+                String,
+                Number,
+                Boolean,
+                RegExp,
+                Error,
+                Map,
+                Set,
+                Symbol,
+                btoa,
+                atob,
+                parseInt,
+                parseFloat,
+                encodeURIComponent,
+                decodeURIComponent,
+                crypto: cryptoObj,
+                Promise,
+                setTimeout,
+                clearTimeout,
+                setInterval,
+                clearInterval,
+                Buffer
+            };
+            ScriptSandbox.sharedContext = vm.createContext(baseSandbox);
+        }
+        return ScriptSandbox.sharedContext;
+    }
 
     public async execute(
         script: string, 
@@ -36,44 +75,9 @@ export class ScriptSandbox {
         const pmBuilder = new PmApiBuilder(context, options.sendRequestHandler);
         const pm = pmBuilder.build();
 
-        // Polyfill crypto for $guid
-        const crypto = {
-            randomUUID: () => require('crypto').randomUUID()
-        };
-
-        const sandbox: any = {
-            pm,
-            console: sandboxConsole,
-            JSON,
-            Date,
-            Math,
-            Array,
-            Object,
-            String,
-            Number,
-            Boolean,
-            RegExp,
-            Error,
-            Map,
-            Set,
-            Symbol,
-            btoa,
-            atob,
-            parseInt,
-            parseFloat,
-            encodeURIComponent,
-            decodeURIComponent,
-            crypto,
-            // Promise support requires specific handling in VM, but we provide it here
-            Promise,
-            setTimeout,
-            clearTimeout,
-            setInterval,
-            clearInterval,
-            Buffer
-        };
-
-        const vmContext = vm.createContext(sandbox);
+        const vmContext = this.getOrCreateBaseContext();
+        vmContext.pm = pm;
+        vmContext.console = sandboxConsole;
 
         // Wrap script in an async IIFE to support await and isolate variables
         const wrappedScript = `

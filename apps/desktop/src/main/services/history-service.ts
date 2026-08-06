@@ -1,5 +1,5 @@
 import { randomUUID as uuidv4 } from 'crypto';
-import { getDb, saveDatabase } from '../storage/database';
+import { getDb, markDirty } from '../storage/database';
 import { HistoryEntry, RequestConfig, ResponseData } from '@api-platform/core';
 
 // Maximum number of history entries to retain in the database.
@@ -41,7 +41,7 @@ export function saveToHistory(request: RequestConfig, response: ResponseData): H
         [MAX_HISTORY_ENTRIES]
     );
 
-    saveDatabase();
+    markDirty();
     return entry;
 }
 
@@ -105,7 +105,7 @@ export function searchHistory(query: string): HistoryEntry[] {
 export function deleteHistoryEntry(id: string): void {
     const db = getDb();
     db.run('DELETE FROM history WHERE id = ?', [id]);
-    saveDatabase();
+    markDirty();
 }
 
 /**
@@ -114,5 +114,5 @@ export function deleteHistoryEntry(id: string): void {
 export function clearAllHistory(): void {
     const db = getDb();
     db.run('DELETE FROM history');
-    saveDatabase();
+    markDirty();
 }

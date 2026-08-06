@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../../i18n/useTranslation';
 import { ResponseBody } from './ResponseBody';
 import { ResponseHeaders } from './ResponseHeaders';
 import { ResponseMetrics } from './ResponseMetrics';

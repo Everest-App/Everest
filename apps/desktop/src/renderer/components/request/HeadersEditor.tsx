@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../../i18n/useTranslation';
 import { v4 as uuidv4 } from 'uuid';
 import { useTabStore } from '../../store/tab-store';
 import { KeyValuePair } from '@api-platform/core';

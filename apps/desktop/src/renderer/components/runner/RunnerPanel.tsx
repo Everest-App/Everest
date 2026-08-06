@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../../i18n/useTranslation';
 import { useRunnerStore } from '../../store/runner-store';
 import { useCollectionStore } from '../../store/collection-store';
 import { useEnvironmentStore } from '../../store/environment-store';
