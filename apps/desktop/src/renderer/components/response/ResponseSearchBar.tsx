@@ -76,7 +76,7 @@ export function ResponseSearchBar({
                             disabled={matchCount === 0}
                             title="Previous match (Shift+Enter)"
                         >
-                            ▲
+                            <SFIcon name="chevron.down" size={10} style={{ transform: 'rotate(180deg)' }} />
                         </button>
                         <button
                             className="response-search-nav"
@@ -84,14 +84,14 @@ export function ResponseSearchBar({
                             disabled={matchCount === 0}
                             title="Next match (Enter)"
                         >
-                            ▼
+                            <SFIcon name="chevron.down" size={10} />
                         </button>
                         <button
                             className="response-search-clear"
                             onClick={() => onQueryChange('')}
                             title="Clear search"
                         >
-                            ×
+                            <SFIcon name="xmark" size={10} />
                         </button>
                     </div>
                 )}

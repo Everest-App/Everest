@@ -1,0 +1,128 @@
+name: Build & Release Everest
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build (${{ matrix.os_name }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            os_name: macOS
+            artifact_name: macos-artifacts
+            package_cmd: npm run package:mac -w apps/desktop
+          - os: windows-latest
+            os_name: Windows
+            artifact_name: windows-artifacts
+            package_cmd: npm run package:win -w apps/desktop
+          - os: ubuntu-latest
+            os_name: Linux
+            artifact_name: linux-artifacts
+            package_cmd: npm run package:linux -w apps/desktop
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Core & Desktop
+        run: npm run build
+
+      - name: Package Desktop App (${{ matrix.os_name }})
+        run: ${{ matrix.package_cmd }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: |
+            apps/desktop/dist/*.dmg
+            apps/desktop/dist/*.zip
+            apps/desktop/dist/*.exe
+            apps/desktop/dist/*.AppImage
+            apps/desktop/dist/*.deb
+            apps/desktop/dist/*.blockmap
+          if-no-files-found: error
+          retention-days: 2
+
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-artifacts
+          merge-multiple: true
+
+      - name: Determine Release Tag & Version
+        id: vars
+        run: |
+          VERSION=$(node -p "require('./apps/desktop/package.json').version")
+          if [[ "${{ github.ref_type }}" == "tag" ]]; then
+            TAG_NAME="${{ github.ref_name }}"
+          else
+            TAG_NAME="v${VERSION}"
+          fi
+          echo "tag_name=${TAG_NAME}" >> $GITHUB_OUTPUT
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+
+      - name: List Artifacts to be Released
+        run: |
+          ls -lah release-artifacts/
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.vars.outputs.tag_name }}
+          name: "Everest v${{ steps.vars.outputs.version }}"
+          body: |
+            ## 🏔️ Everest v${{ steps.vars.outputs.version }}
+
+            ### 📦 Downloads & Platforms
+            - **macOS:** Apple Silicon (`arm64`) & Intel (`x64`) DMG
+            - **Windows:** Setup `.exe` (NSIS Installer)
+            - **Linux:** `.AppImage` & `.deb` packages
+
+            ---
+            ### 📝 What's Changed
+          generate_release_notes: true
+          files: release-artifacts/*
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

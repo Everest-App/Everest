@@ -135,7 +135,7 @@ export function ResponseBody({ response }: ResponseBodyProps) {
     useEffect(() => {
         if (matches.length === 0) return;
         const el = bodyRef.current?.querySelector(`[data-match-index="${currentMatch}"]`);
-        el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el?.scrollIntoView({ behavior: 'auto', block: 'center' });
     }, [currentMatch, matches.length]);
 
     const goToNextMatch = useCallback(() => {
@@ -172,17 +172,7 @@ export function ResponseBody({ response }: ResponseBodyProps) {
 
     return (
         <div ref={bodyRef}>
-            {/* Search bar */}
-            <ResponseSearchBar
-                query={searchQuery}
-                onQueryChange={setSearchQuery}
-                matchCount={matches.length}
-                currentMatch={currentMatch}
-                onNext={goToNextMatch}
-                onPrev={goToPrevMatch}
-            />
-
-            {/* View mode + copy buttons */}
+            {/* Unified Sticky Header: View Mode buttons + Search Bar */}
             <div className="response-toolbar">
                 <div className="response-view-modes">
                     <button
@@ -207,7 +197,14 @@ export function ResponseBody({ response }: ResponseBodyProps) {
                     )}
                 </div>
 
-
+                <ResponseSearchBar
+                    query={searchQuery}
+                    onQueryChange={setSearchQuery}
+                    matchCount={matches.length}
+                    currentMatch={currentMatch}
+                    onNext={goToNextMatch}
+                    onPrev={goToPrevMatch}
+                />
             </div>
 
             {/* Response content */}

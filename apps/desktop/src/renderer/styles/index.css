@@ -1670,7 +1670,7 @@ body {
 
 .env-var-editor {
   padding: var(--space-sm) var(--space-md);
-  background: var(--bg-primary);
+  background: var(--bg-secondary);
 }
 
 .env-var-label {
@@ -3448,8 +3448,11 @@ body {
 
 /* ─── Response Search Bar ───────────────────────────────────── */
 .response-search-bar {
-  padding: var(--space-xs) 0;
-  margin-bottom: var(--space-xs);
+  flex: 1;
+  max-width: 360px;
+  min-width: 200px;
+  padding: 0;
+  margin-bottom: 0;
 }
 
 .response-search-wrapper {
@@ -3459,18 +3462,20 @@ body {
   background: var(--bg-input);
   border: 1px solid var(--border-primary);
   border-radius: var(--radius-md);
-  padding: 3px 8px;
-  transition: border-color var(--transition-fast);
+  padding: 4px 10px;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .response-search-wrapper:focus-within {
-  border-color: var(--accent-primary);
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
 .response-search-icon {
   font-size: 12px;
-  opacity: 0.5;
+  opacity: 0.6;
   flex-shrink: 0;
+  color: var(--text-tertiary);
 }
 
 .response-search-input {
@@ -3498,21 +3503,22 @@ body {
 .response-search-count {
   font-size: 10px;
   font-weight: 600;
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   font-family: var(--font-mono);
-  padding: 0 4px;
-  min-width: 50px;
+  padding: 2px 6px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+  min-width: 48px;
   text-align: center;
 }
 
 .response-search-nav {
-  background: transparent;
+  background: var(--bg-secondary);
   border: 1px solid var(--border-primary);
   border-radius: var(--radius-sm);
   color: var(--text-secondary);
-  font-size: 8px;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3523,6 +3529,7 @@ body {
 .response-search-nav:hover:not(:disabled) {
   background: var(--bg-hover);
   color: var(--text-primary);
+  border-color: var(--border-focus);
 }
 
 .response-search-nav:disabled {
@@ -3534,14 +3541,14 @@ body {
   background: transparent;
   border: none;
   color: var(--text-tertiary);
-  font-size: 14px;
   cursor: pointer;
   width: 20px;
   height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-full);
+  transition: all var(--transition-fast);
 }
 
 .response-search-clear:hover {
@@ -3551,24 +3558,36 @@ body {
 
 /* ─── Search Highlights ─────────────────────────────────────── */
 .search-highlight {
-  background: rgba(250, 204, 21, 0.3);
+  background: rgba(250, 204, 21, 0.25);
   color: inherit;
   border-radius: 2px;
-  padding: 0 1px;
+  padding: 0 2px;
 }
 
 .search-highlight.current {
-  background: rgba(250, 204, 21, 0.7);
-  outline: 1px solid rgba(250, 204, 21, 0.9);
+  background: var(--accent-primary);
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 3px;
+  outline: 2px solid var(--accent-primary);
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
 }
 
 /* ─── Response Toolbar ──────────────────────────────────────── */
 .response-toolbar {
+  position: sticky;
+  top: calc(-1 * var(--space-md));
+  z-index: 10;
+  background: var(--bg-secondary);
+  padding-top: var(--space-md);
+  padding-bottom: var(--space-sm);
+  margin-top: calc(-1 * var(--space-md));
+  margin-bottom: var(--space-md);
+  border-bottom: 1px solid var(--border-primary);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-sm);
-  margin-bottom: var(--space-sm);
+  gap: var(--space-md);
   flex-wrap: wrap;
 }
 
