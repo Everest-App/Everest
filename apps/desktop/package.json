@@ -1,7 +1,7 @@
 {
   "name": "api-platform-desktop",
   "version": "2.2.1",
-  "author": "API Platform Team",
+  "author": "API Platform Team <contact@everest-app.com>",
   "description": "Everest API Testing Platform",
   "repository": {
     "type": "git",
@@ -14,8 +14,8 @@
     "dev:main": "wait-on http://localhost:5173 && tsc -p tsconfig.main.json && electron .",
     "build:renderer": "vite build",
     "build:main": "node esbuild.main.config.mjs",
-    "build:copy-assets": "mkdir -p dist/migrations && cp src/main/storage/migrations/*.sql dist/migrations/",
-    "build:clean": "rm -rf dist",
+    "build:copy-assets": "node scripts/copy-assets.mjs",
+    "build:clean": "node scripts/clean.mjs",
     "build": "npm run build:clean && npm run build:renderer && npm run build:main && npm run build:copy-assets",
     "package": "npm run build && electron-builder --mac --win --linux --publish never",
     "package:mac": "npm run build && electron-builder --mac --publish never",
@@ -124,7 +124,9 @@
         "deb"
       ],
       "category": "Development",
-      "icon": "resources/icon.png"
+      "icon": "resources/icon.png",
+      "maintainer": "API Platform Team <contact@everest-app.com>",
+      "desktopName": "Everest"
     },
     "nsis": {
       "oneClick": false,
