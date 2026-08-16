@@ -124,9 +124,10 @@
         "deb"
       ],
       "category": "Development",
-      "icon": "resources/icon.png",
-      "maintainer": "API Platform Team <contact@everest-app.com>",
-      "desktopName": "Everest"
+      "icon": "resources/icon.png"
+    },
+    "deb": {
+      "maintainer": "API Platform Team <contact@everest-app.com>"
     },
     "nsis": {
       "oneClick": false,
