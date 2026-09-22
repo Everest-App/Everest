@@ -1,4 +1,4 @@
-import { RequestConfig, CodeGenTarget, CodeGenResult, KeyValuePair, interpolateRequestConfig } from '@api-platform/core';
+import { RequestConfig, CodeGenTarget, CodeGenResult, KeyValuePair, interpolateRequestConfig } from '@everest/core';
 import { buildFinalUrl } from '../utils/url-builder';
 import { getGlobalVariables } from './environment-service';
 

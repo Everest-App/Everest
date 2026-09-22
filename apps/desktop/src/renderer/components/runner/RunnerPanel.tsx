@@ -3,7 +3,7 @@ import { useTranslation } from '../../i18n/useTranslation';
 import { useRunnerStore } from '../../store/runner-store';
 import { useCollectionStore } from '../../store/collection-store';
 import { useEnvironmentStore } from '../../store/environment-store';
-import { RunnerItemResult, parseCsv } from '@api-platform/core';
+import { RunnerItemResult, parseCsv } from '@everest/core';
 import { generateJSONReport, generateTextReport, downloadReport } from '../../utils/runner-report';
 import { JsonTreeViewer } from '../response/JsonTreeViewer';
 import { SaveToFolderModal } from '../collections/SaveToFolderModal';

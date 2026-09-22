@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useCollectionStore } from '../../store/collection-store';
-import { ImportFormat, ExportFormat } from '@api-platform/core';
+import { ImportFormat, ExportFormat } from '@everest/core';
 import { SFIcon } from '../common/SFIcon';
 import { ImportNameModal } from '../common/ImportNameModal';
 

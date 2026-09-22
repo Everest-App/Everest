@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useTabStore } from '../../store/tab-store';
-import { AUTH_TYPES } from '@api-platform/core';
-import { AuthType, AuthConfig } from '@api-platform/core';
+import { AUTH_TYPES } from '@everest/core';
+import { AuthType, AuthConfig } from '@everest/core';
 
 export function AuthEditor() {
     const { t } = useTranslation();

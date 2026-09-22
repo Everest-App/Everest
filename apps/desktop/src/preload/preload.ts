@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
-import { IPC_CHANNELS } from '@api-platform/core';
+import { IPC_CHANNELS } from '@everest/core';
 import {
   RequestConfig, ResponseData, HistoryEntry, CodeGenTarget, CodeGenResult,
   Collection, CollectionItem, Environment, Variable,
@@ -9,7 +9,7 @@ import {
   WebSocketConfig, WebSocketMessage, SSEConfig, SSEEvent,
   MockServerConfig, MockServerStatus, MockRoute, MockRequestLog,
   ElectronAPI,
-} from '@api-platform/core';
+} from '@everest/core';
 
 const api: ElectronAPI = {
   sendRequest: (config: RequestConfig, environmentId?: string): Promise<SendRequestResult> =>

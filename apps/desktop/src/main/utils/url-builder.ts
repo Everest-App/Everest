@@ -15,7 +15,7 @@
  *   4. Serialize the final URL exactly once.
  */
 
-import { RequestConfig, KeyValuePair } from '@api-platform/core';
+import { RequestConfig, KeyValuePair } from '@everest/core';
 
 /**
  * Build the final request URL from a RequestConfig.

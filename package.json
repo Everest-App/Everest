@@ -1,6 +1,6 @@
 {
-  "name": "api-platform-monorepo",
-  "version": "2.2.1",
+  "name": "everest-monorepo",
+  "version": "0.1.0",
   "private": true,
   "repository": {
     "type": "git",

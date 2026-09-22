@@ -1,7 +1,7 @@
 {
-  "name": "@api-platform/core",
-  "version": "2.2.1",
-  "description": "Core types, constants, and utilities for the API Platform",
+  "name": "@everest/core",
+  "version": "0.1.0",
+  "description": "Core types, constants, and utilities for the Everest",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/esm/index.d.ts",
@@ -27,6 +27,6 @@
     "core",
     "types"
   ],
-  "author": "API Platform Team <contact@everest-app.com>",
+  "author": "Everest Team <contact@everest-app.com>",
   "license": "MIT"
 }

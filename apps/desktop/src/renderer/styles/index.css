@@ -5,8 +5,8 @@
 /* ─── CSS Custom Properties (Design Tokens) ─────────────────── */
 :root {
   /* Typography */
-  --font-sans: 'SF Pro Text', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'SF Pro', 'Helvetica Neue', sans-serif;
-  --font-mono: 'SF Mono', 'ui-monospace', 'Menlo', 'Monaco', 'Cascadia Code', monospace;
+  --font-sans: 'Inter Variable', 'Vazirmatn Variable', 'SF Pro Text', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'SF Pro', 'Helvetica Neue', sans-serif;
+  --font-mono: 'JetBrains Mono Variable', 'SF Mono', 'ui-monospace', 'Menlo', 'Monaco', 'Cascadia Code', monospace;
 
   /* Spacing */
   --space-xs: 4px;

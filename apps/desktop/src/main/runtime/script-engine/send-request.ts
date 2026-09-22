@@ -1,4 +1,4 @@
-import { RequestConfig } from '@api-platform/core';
+import { RequestConfig } from '@everest/core';
 
 // This is a placeholder for the actual RequestExecutor implementation
 // which we will build in Phase 3. 

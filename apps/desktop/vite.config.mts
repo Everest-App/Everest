@@ -41,7 +41,7 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            '@renderer': path.resolve(__dirname, 'src/renderer'),
+            '@renderer': path.resolve(import.meta.dirname, 'src/renderer'),
         },
         dedupe: ['react', 'react-dom'],
         // Ensure Vite follows symlinks in npm workspaces
@@ -53,6 +53,6 @@ export default defineConfig({
     },
     // Explicitly include the workspace package so Vite pre-bundles it
     optimizeDeps: {
-        include: ['@api-platform/core'],
+        include: ['@everest/core'],
     },
 });

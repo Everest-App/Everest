@@ -5,7 +5,7 @@ import {
   BodyType,
   KeyValuePair,
   AuthConfig,
-} from '@api-platform/core';
+} from '@everest/core';
 import { parseUrlParams } from './url-params-sync';
 
 export interface CurlParseResult {

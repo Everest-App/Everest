@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AuthConfig } from '@api-platform/core';
+import { AuthConfig } from '@everest/core';
 
 /**
  * Applies authentication configuration to the request headers (and optionally URL).

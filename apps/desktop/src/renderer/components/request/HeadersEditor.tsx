@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { v4 as uuidv4 } from 'uuid';
 import { useTabStore } from '../../store/tab-store';
-import { KeyValuePair } from '@api-platform/core';
+import { KeyValuePair } from '@everest/core';
 import { HeaderValueInput } from './HeaderValueInput';
 import { VariableHighlightInput } from '../common/VariableHighlightInput';
 

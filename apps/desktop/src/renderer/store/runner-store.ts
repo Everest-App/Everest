@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { RunnerConfig, RunnerResult, RunnerItemResult, CsvParseResult } from '@api-platform/core';
+import { RunnerConfig, RunnerResult, RunnerItemResult, CsvParseResult } from '@everest/core';
 
 interface RunnerStore {
     // State

@@ -1,4 +1,4 @@
-import { RuntimeTestAssertion } from '@api-platform/core';
+import { RuntimeTestAssertion } from '@everest/core';
 
 export function createExpectChain(value: any, assertions: RuntimeTestAssertion[]) {
     let negated = false;

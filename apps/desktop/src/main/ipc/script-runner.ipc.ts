@@ -1,6 +1,6 @@
 import { ipcMain, BrowserWindow } from 'electron';
-import { IPC_CHANNELS } from '@api-platform/core';
-import { ScriptContext, RunnerConfig, ReportFormat } from '@api-platform/core';
+import { IPC_CHANNELS } from '@everest/core';
+import { ScriptContext, RunnerConfig, ReportFormat } from '@everest/core';
 import { runScript } from '../services/script-sandbox';
 import { runCollection, cancelRun, cancelAllRuns, getRunner } from '../services/runner-service';
 import { getCollectionById } from '../services/collection-service';

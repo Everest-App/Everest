@@ -16,6 +16,7 @@ function createWindow(): void {
     const isDev = !app.isPackaged;
 
     mainWindow = new BrowserWindow({
+        show: false,
         width: 1400,
         height: 900,
         minWidth: 900,
@@ -30,6 +31,10 @@ function createWindow(): void {
             sandbox: false,
             preload: path.join(__dirname, '..', 'preload', 'preload.js'),
         },
+    });
+
+    mainWindow.once('ready-to-show', () => {
+        mainWindow?.show();
     });
 
     Menu.setApplicationMenu(createAppMenu(mainWindow));
@@ -52,13 +57,13 @@ function createWindow(): void {
     });
 }
 
-// --- Data Migration (API Platform -> Everest) ---
-const possibleOldNames = ['api-platform-desktop', 'API Platform', 'api-platform'];
+// --- Data Migration (Everest -> Everest) ---
+const possibleOldNames = ['everest-desktop', 'Everest', 'everest'];
 const migrationFlagPath = path.join(app.getPath('userData'), '.migrated');
 
 if (!fs.existsSync(migrationFlagPath)) {
     for (const oldName of possibleOldNames) {
-        const oldDbPath = path.join(app.getPath('appData'), oldName, 'data', 'api-platform.db');
+        const oldDbPath = path.join(app.getPath('appData'), oldName, 'data', 'everest.db');
 
         if (fs.existsSync(oldDbPath)) {
             const oldUserDataPath = path.join(app.getPath('appData'), oldName);

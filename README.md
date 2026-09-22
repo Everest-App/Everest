@@ -118,6 +118,24 @@ npx electron-builder --mac --win
 ```
 The output files will be located in `apps/desktop/dist/`.
 
+## 🏷️ Versioning & Releases
+We use custom release scripts to automatically bump versions, create git tags, and push to the repository. These commands are available in the root `package.json`:
+
+To release a new **Patch** version (e.g., `0.1.0` -> `0.1.1`):
+```bash
+npm run release:patch
+```
+
+To release a new **Minor** version (e.g., `0.1.0` -> `0.2.0`):
+```bash
+npm run release:minor
+```
+
+To release a new **Major** version (e.g., `0.1.0` -> `1.0.0`):
+```bash
+npm run release:major
+```
+
 ## 🤝 Contributing
 We welcome contributions from the community! To get started:
 1. Fork the repository.

@@ -1,7 +1,7 @@
 {
-  "name": "api-platform-desktop",
-  "version": "2.2.1",
-  "author": "API Platform Team <contact@everest-app.com>",
+  "name": "everest-desktop",
+  "version": "0.1.0",
+  "author": "Everest Team <contact@everest-app.com>",
   "description": "Everest API Testing Platform",
   "repository": {
     "type": "git",
@@ -21,36 +21,45 @@
     "package:mac": "npm run build && electron-builder --mac --publish never",
     "package:win": "npm run build && electron-builder --win --publish never",
     "package:linux": "npm run build && electron-builder --linux --publish never",
-    "lint": "tsc --noEmit -p tsconfig.main.json && tsc --noEmit -p tsconfig.renderer.json"
+    "lint": "tsc --noEmit -p tsconfig.main.json && tsc --noEmit -p tsconfig.renderer.json",
+    "test:bdd": "TS_NODE_PROJECT=tsconfig.test.json cucumber-js"
   },
   "dependencies": {
-    "@api-platform/core": "*",
-    "axios": "^1.17.0",
-    "sql.js": "^1.14.1",
-    "uuid": "^14.0.0",
-    "ws": "^8.21.0"
+    "sql.js": "^1.14.2"
   },
   "devDependencies": {
+    "@cucumber/cucumber": "^13.2.1",
+    "@everest/core": "*",
+    "@fontsource-variable/inter": "5.3.0",
+    "@fontsource-variable/jetbrains-mono": "5.3.0",
+    "@fontsource-variable/vazirmatn": "5.3.0",
+    "@types/node": "^25.9.3",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@types/uuid": "^11.0.0",
     "@types/ws": "^8.18.1",
     "@vitejs/plugin-react": "^6.0.2",
+    "axios": "^1.17.0",
     "concurrently": "^10.0.3",
-    "electron": "^42.4.0",
-    "electron-builder": "^26.15.2",
+    "electron": "^44.4.3",
+    "electron-builder": "^26.15.3",
     "esbuild": "^0.28.1",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
     "terser": "^5.48.0",
-    "typescript": "^6.0.3",
-    "vite": "^8.0.16",
+    "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.0",
     "wait-on": "^9.0.10",
-    "zustand": "^5.0.14"
+    "ws": "^8.21.0",
+    "uuid": "^14.0.0",
+    "zustand": "^5.0.15"
   },
   "build": {
-    "appId": "com.apiplatform.app",
+    "appId": "com.everest.app",
     "productName": "Everest",
+    "electronLanguages": ["en-US"],
     "electronVersion": "42.4.0",
     "asar": true,
     "compression": "maximum",
@@ -127,7 +136,7 @@
       "icon": "resources/icon.png"
     },
     "deb": {
-      "maintainer": "API Platform Team <contact@everest-app.com>"
+      "maintainer": "Everest Team <contact@everest-app.com>"
     },
     "nsis": {
       "oneClick": false,

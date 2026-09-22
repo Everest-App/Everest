@@ -1,4 +1,4 @@
-import { ScriptContext, ScriptResult, RuntimeScriptContext, VariableScopeMap } from '@api-platform/core';
+import { ScriptContext, ScriptResult, RuntimeScriptContext, VariableScopeMap } from '@everest/core';
 import { ScriptSandbox } from '../runtime/script-engine/sandbox';
 
 const sandbox = new ScriptSandbox();

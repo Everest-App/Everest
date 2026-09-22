@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
-import { IPC_CHANNELS } from '@api-platform/core';
-import { PluginManifest } from '@api-platform/core';
+import { IPC_CHANNELS } from '@everest/core';
+import { PluginManifest } from '@everest/core';
 import {
     getAllPlugins,
     installPlugin,

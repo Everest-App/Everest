@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useCollectionStore } from '../../store/collection-store';
-import { RequestConfig, ResponseData, CollectionItem } from '@api-platform/core';
+import { RequestConfig, ResponseData, CollectionItem } from '@everest/core';
 import { buildTree } from '../../utils/search-utils';
 import { SFIcon } from '../common/SFIcon';
 import { v4 as uuidv4 } from 'uuid';

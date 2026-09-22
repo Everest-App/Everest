@@ -1,10 +1,10 @@
 import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react';
 import { useTranslation } from '../../i18n/useTranslation';
-import { useTabStore } from '../../store/tab-store';
+import { useTabStore, useActiveTab } from '../../store/tab-store';
 import { useHistoryStore } from '../../store/history-store';
 import { useEnvironmentStore } from '../../store/environment-store';
-import { HTTP_METHODS } from '@api-platform/core';
-import { HttpMethod } from '@api-platform/core';
+import { HTTP_METHODS } from '@everest/core';
+import { HttpMethod } from '@everest/core';
 import { isCurlCommand } from '../../utils/curl-parser';
 import { tokenizeUrl, resolveVariable, findVariableLocation, ResolvedVariable } from '../../utils/env-resolver';
 import { SFIcon } from '../common/SFIcon';
@@ -17,7 +17,8 @@ interface UrlBarProps {
 
 export function UrlBar({ onCodeGen, onImportCurl, onNavigateToVariable }: UrlBarProps) {
     const { t } = useTranslation();
-    const { tabs, activeTabId, updateMethod, updateUrl, setLoading, setResponse, setScriptResults } = useTabStore();
+    const { updateMethod, updateUrl, setLoading, setResponse, setScriptResults } = useTabStore();
+    const activeTab = useActiveTab();
     const { fetchHistory } = useHistoryStore();
     const { environments, activeEnvironmentId, globalVariables } = useEnvironmentStore();
 
@@ -32,8 +33,6 @@ export function UrlBar({ onCodeGen, onImportCurl, onNavigateToVariable }: UrlBar
     }>({ visible: false, x: 0, y: 0, data: null });
 
     const [isFocused, setIsFocused] = useState(false);
-
-    const activeTab = tabs.find((t) => t.id === activeTabId);
     if (!activeTab) return null;
 
     const { request, loading } = activeTab;

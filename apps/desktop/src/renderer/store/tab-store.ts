@@ -8,7 +8,7 @@ import {
     HttpMethod,
     BodyType,
     AuthType,
-} from '@api-platform/core';
+} from '@everest/core';
 import { parseUrlParams, buildUrlFromParams, mergeParamsFromUrl, getBaseUrl, normalizeRequestParams } from '../utils/url-params-sync';
 
 function createDefaultRequest(): RequestConfig {
@@ -272,3 +272,20 @@ export const useTabStore = create<TabStore>((set, get) => {
         },
     };
 });
+
+/**
+ * Select only the active tab — prevents re-renders from changes to other tabs.
+ */
+export function useActiveTab(): Tab | null {
+    return useTabStore((s) => s.tabs.find((t) => t.id === s.activeTabId) ?? null);
+}
+
+/**
+ * Select only the active request config.
+ */
+export function useActiveRequest(): RequestConfig | null {
+    return useTabStore((s) => {
+        const tab = s.tabs.find((t) => t.id === s.activeTabId);
+        return tab?.request ?? null;
+    });
+}

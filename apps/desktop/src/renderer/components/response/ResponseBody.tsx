@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
-import { ResponseData } from '@api-platform/core';
+import { ResponseData } from '@everest/core';
 import { JsonTreeViewer } from './JsonTreeViewer';
 import { ResponseSearchBar } from './ResponseSearchBar';
 
@@ -81,6 +81,9 @@ export function ResponseBody({ response }: ResponseBodyProps) {
     const [searchQuery, setSearchQuery] = useState('');
     const [currentMatch, setCurrentMatch] = useState(0);
 
+    const VIRTUALIZE_THRESHOLD = 50_000;
+    const [visibleChars, setVisibleChars] = useState(VIRTUALIZE_THRESHOLD);
+
     const bodyRef = useRef<HTMLDivElement>(null);
 
     const debouncedQuery = useDebounce(searchQuery, 150);
@@ -134,9 +137,19 @@ export function ResponseBody({ response }: ResponseBodyProps) {
     // Scroll to current match
     useEffect(() => {
         if (matches.length === 0) return;
+        const currentM = matches[currentMatch];
+        if (currentM && currentM.start > visibleChars) {
+            setVisibleChars(Math.max(visibleChars, currentM.end + VIRTUALIZE_THRESHOLD));
+            setTimeout(() => {
+                const el = bodyRef.current?.querySelector(`[data-match-index="${currentMatch}"]`);
+                el?.scrollIntoView({ behavior: 'auto', block: 'center' });
+            }, 50);
+            return;
+        }
+
         const el = bodyRef.current?.querySelector(`[data-match-index="${currentMatch}"]`);
         el?.scrollIntoView({ behavior: 'auto', block: 'center' });
-    }, [currentMatch, matches.length]);
+    }, [currentMatch, matches, visibleChars]);
 
     const goToNextMatch = useCallback(() => {
         if (matches.length === 0) return;
@@ -170,8 +183,22 @@ export function ResponseBody({ response }: ResponseBodyProps) {
         try { parsedJson = JSON.parse(response.body); } catch { /* fall through to text */ }
     }
 
+    const textToRender = formattedBody.length > visibleChars 
+        ? formattedBody.substring(0, visibleChars) + '\n... (scroll for more)' 
+        : formattedBody;
+
+    const visibleMatches = matches.filter(m => m.start < textToRender.length);
+
+    const handleScroll = useCallback((e: React.UIEvent<HTMLPreElement>) => {
+        if (formattedBody.length <= visibleChars) return;
+        const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+        if (scrollTop + clientHeight >= scrollHeight - 800) {
+            setVisibleChars(prev => Math.min(prev + VIRTUALIZE_THRESHOLD, formattedBody.length));
+        }
+    }, [formattedBody.length, visibleChars]);
+
     return (
-        <div ref={bodyRef}>
+        <div ref={bodyRef} className="response-body-wrapper" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
             {/* Unified Sticky Header: View Mode buttons + Search Bar */}
             <div className="response-toolbar">
                 <div className="response-view-modes">
@@ -213,23 +240,23 @@ export function ResponseBody({ response }: ResponseBodyProps) {
                     srcDoc={response.body}
                     style={{
                         width: '100%',
-                        height: '400px',
-                        border: '1px solid var(--border-primary)',
-                        borderRadius: 'var(--radius-md)',
+                        height: '100%',
+                        border: 'none',
                         background: 'white',
+                        flex: 1
                     }}
                     sandbox="allow-same-origin"
                     title="Response Preview"
                 />
             ) : showJsonTree && parsedJson !== null ? (
-                <div className="json-tree-container">
+                <div className="json-tree-container" style={{ flex: 1, overflowY: 'auto' }}>
                     <JsonTreeViewer data={parsedJson} />
                 </div>
             ) : (
-                <pre className="response-pre">
+                <pre className="response-pre" onScroll={handleScroll} style={{ flex: 1, overflowY: 'auto' }}>
                     <HighlightedText
-                        text={formattedBody}
-                        matches={matches}
+                        text={textToRender}
+                        matches={visibleMatches}
                         currentMatch={currentMatch}
                     />
                 </pre>

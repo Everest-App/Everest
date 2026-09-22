@@ -3,7 +3,7 @@
  * Handles encoding, special characters, unicode, and preserves param order.
  */
 import { v4 as uuidv4 } from 'uuid';
-import { KeyValuePair, RequestConfig } from '@api-platform/core';
+import { KeyValuePair, RequestConfig } from '@everest/core';
 
 /**
  * Parse a URL string and extract query parameters as KeyValuePair[].

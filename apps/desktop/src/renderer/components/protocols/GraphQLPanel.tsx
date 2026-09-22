@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { GraphQLRequest, GraphQLResponse, GraphQLIntrospection, GraphQLSchemaField } from '@api-platform/core';
+import { GraphQLRequest, GraphQLResponse, GraphQLIntrospection, GraphQLSchemaField } from '@everest/core';
 import { SFIcon } from '../common/SFIcon';
 
 export function GraphQLPanel() {

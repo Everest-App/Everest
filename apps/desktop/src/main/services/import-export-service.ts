@@ -9,10 +9,10 @@ import {
     KeyValuePair,
     Environment,
     Variable,
-} from '@api-platform/core';
+} from '@everest/core';
 import { createCollection, addCollectionItem } from './collection-service';
 import { createEnvironment, updateEnvironment } from './environment-service';
-import { extractScriptsFromEvents, buildPostmanEvents } from '@api-platform/core';
+import { extractScriptsFromEvents, buildPostmanEvents } from '@everest/core';
 
 // ─── Import ──────────────────────────────────────────────────────
 

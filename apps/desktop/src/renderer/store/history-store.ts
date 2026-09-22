@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { HistoryEntry } from '@api-platform/core';
+import { HistoryEntry } from '@everest/core';
 
 interface HistoryStore {
     entries: HistoryEntry[];

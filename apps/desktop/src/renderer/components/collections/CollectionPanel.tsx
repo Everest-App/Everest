@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react'
 import { useTranslation } from '../../i18n/useTranslation';
 import { useCollectionStore } from '../../store/collection-store';
 import { useTabStore } from '../../store/tab-store';
-import { Collection, CollectionItem } from '@api-platform/core';
+import { Collection, CollectionItem } from '@everest/core';
 import { v4 as uuidv4 } from 'uuid';
 import { useDebouncedValue } from '../../hooks/useSearch';
 import { searchCollections, buildTree, MatchedCollectionItem, MatchedCollection } from '../../utils/search-utils';

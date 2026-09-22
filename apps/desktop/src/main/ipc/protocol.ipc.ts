@@ -1,6 +1,6 @@
 import { ipcMain, BrowserWindow } from 'electron';
-import { IPC_CHANNELS } from '@api-platform/core';
-import { GraphQLRequest, KeyValuePair, WebSocketConfig, SSEConfig } from '@api-platform/core';
+import { IPC_CHANNELS } from '@everest/core';
+import { GraphQLRequest, KeyValuePair, WebSocketConfig, SSEConfig } from '@everest/core';
 import { sendGraphQL, introspectGraphQL } from '../services/graphql-service';
 import { wsConnect, wsSend, wsDisconnect } from '../services/websocket-service';
 import { sseConnect, sseDisconnect } from '../services/sse-service';

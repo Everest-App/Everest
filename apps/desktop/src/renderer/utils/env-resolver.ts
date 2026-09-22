@@ -3,7 +3,7 @@
  * Returns variable info for tooltip display.
  */
 import { useEnvironmentStore } from '../store/environment-store';
-import { Variable } from '@api-platform/core';
+import { Variable } from '@everest/core';
 
 export interface ResolvedVariable {
     name: string;

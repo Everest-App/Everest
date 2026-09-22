@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { v4 as uuidv4 } from 'uuid';
 import { useEnvironmentStore } from '../../store/environment-store';
-import { Environment, Variable } from '@api-platform/core';
+import { Environment, Variable } from '@everest/core';
 import { useDebouncedValue } from '../../hooks/useSearch';
 import { searchVariables, MatchedVariable } from '../../utils/search-utils';
 import { HighlightedText } from '../common/HighlightedText';

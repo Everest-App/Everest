@@ -65,7 +65,7 @@ graph TD
 - **Responsibility:** Secure type-safe boundary between renderer and main; exposes `ElectronAPI` via `contextBridge`
 - **Location:** `apps/desktop/src/preload/preload.ts`
 - **Technologies:** Electron `contextBridge`, `ipcRenderer`
-- **Pattern:** All IPC channels are named constants from `@api-platform/core` (`IPC_CHANNELS`)
+- **Pattern:** All IPC channels are named constants from `@everest/core` (`IPC_CHANNELS`)
 - **Security:** `contextIsolation: true`, `nodeIntegration: false`
 
 ### Main Process
@@ -118,7 +118,7 @@ graph TD
 - **Responsibility:** Persistent data storage
 - **Location:** `apps/desktop/src/main/storage/`
 - **Technology:** sql.js (SQLite compiled to WebAssembly)
-- **Persistence file:** `<userData>/data/api-platform.db`
+- **Persistence file:** `<userData>/data/everest.db`
 - **Strategy:** In-memory DB at runtime; auto-saved to disk every 30 seconds (dirty-flag based) + forced save on quit
 - **Schema management:** SQL migration files (`001-init.sql` … `004-runtime-state.sql`)
 
@@ -126,7 +126,7 @@ graph TD
 - **Responsibility:** Shared TypeScript types, interfaces, and constants used by both main and renderer
 - **Location:** `packages/core/src/`
 - **Key files:** `types.ts`, `constants.ts` (IPC channel names), `index.ts`
-- **Published as:** `@api-platform/core` (internal npm workspace package)
+- **Published as:** `@everest/core` (internal npm workspace package)
 
 ---
 
@@ -249,7 +249,7 @@ sequenceDiagram
 | Main → Renderer (push) | `mainWindow.webContents.send` + `ipcRenderer.on` | Push events (runner progress) |
 | Preload bridge | `contextBridge.exposeInMainWorld('api', ...)` | Renderer access to IPC |
 | UI state | Zustand stores | In-renderer only |
-| Shared types/constants | `@api-platform/core` npm workspace package | Compile-time only |
+| Shared types/constants | `@everest/core` npm workspace package | Compile-time only |
 
 - All IPC channel names are constants defined in `packages/core/src/constants.ts`.
 - `contextIsolation: true` enforces that the renderer has no direct Node.js access.
@@ -262,7 +262,7 @@ sequenceDiagram
 |---|---|
 | Engine | sql.js (SQLite compiled to WASM) |
 | Runtime state | In-memory `SqlJsDatabase` instance |
-| Persistence file | `<Electron userData>/data/api-platform.db` |
+| Persistence file | `<Electron userData>/data/everest.db` |
 | Auto-save | Every 30 seconds, only when dirty flag is set |
 | Forced save | On `before-quit` event |
 | Schema management | SQL migration files applied in order at startup |
@@ -286,7 +286,7 @@ sequenceDiagram
 | `i18next` + `react-i18next` | Internationalization | Renderer |
 | `uuid` | ID generation | Main / Services |
 | `electron-builder` | App packaging (dmg, exe, AppImage, deb) | Build |
-| `@api-platform/core` | Shared types and IPC constants | All layers |
+| `@everest/core` | Shared types and IPC constants | All layers |
 
 ---
 

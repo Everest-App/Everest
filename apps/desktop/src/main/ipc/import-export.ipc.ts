@@ -1,7 +1,7 @@
 import { ipcMain, dialog } from 'electron';
 import * as fs from 'fs';
-import { IPC_CHANNELS } from '@api-platform/core';
-import { ImportFormat, ExportFormat } from '@api-platform/core';
+import { IPC_CHANNELS } from '@everest/core';
+import { ImportFormat, ExportFormat } from '@everest/core';
 import { importData, exportCollection } from '../services/import-export-service';
 import { getAllCollections } from '../services/collection-service';
 

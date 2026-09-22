@@ -1,5 +1,5 @@
-import { VariableScopeMap, VariableMutations } from '@api-platform/core';
-import { VariableResolver as CoreVariableResolver } from '@api-platform/core';
+import { VariableScopeMap, VariableMutations } from '@everest/core';
+import { VariableResolver as CoreVariableResolver } from '@everest/core';
 import { EnvironmentManager } from './environment-manager';
 import { CollectionVariableManager } from './collection-variable-manager';
 import { IterationDataManager } from './iteration-data-manager';

@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
-import { IPC_CHANNELS } from '@api-platform/core';
-import { RequestConfig, SendRequestResult } from '@api-platform/core';
+import { IPC_CHANNELS } from '@everest/core';
+import { RequestConfig, SendRequestResult } from '@everest/core';
 import { saveToHistory } from '../services/history-service';
 import { getItemWithAncestors } from '../services/collection-service';
 import { RuntimeEngine } from '../runtime/runtime-engine';

@@ -72,7 +72,7 @@ export async function initDatabase(): Promise<void> {
         fs.mkdirSync(dbDir, { recursive: true });
     }
 
-    dbPath = path.join(dbDir, 'api-platform.db');
+    dbPath = path.join(dbDir, 'everest.db');
 
     const SQL = await initSqlJs();
 

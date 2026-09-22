@@ -3,7 +3,7 @@ import {
     RuntimeScriptContext, 
     RuntimeScriptResult, 
     VariableMutation 
-} from '@api-platform/core';
+} from '@everest/core';
 import { PmApiBuilder } from './pm-api';
 import { ConsoleCapture } from './console-capture';
 

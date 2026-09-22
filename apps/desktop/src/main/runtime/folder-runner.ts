@@ -1,4 +1,4 @@
-import { Collection, CollectionItem, RuntimeRunnerConfig } from '@api-platform/core';
+import { Collection, CollectionItem, RuntimeRunnerConfig } from '@everest/core';
 import { CollectionRunner, RunnerHooks } from './collection-runner';
 
 /**

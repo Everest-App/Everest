@@ -1,8 +1,8 @@
-import { Collection, RunnerConfig, RunnerResult, RunnerItemResult } from '@api-platform/core';
+import { Collection, RunnerConfig, RunnerResult, RunnerItemResult } from '@everest/core';
 import { CollectionRunner } from '../runtime/collection-runner';
 import { createFolderRunner } from '../runtime/folder-runner';
 import { BrowserWindow } from 'electron';
-import { IPC_CHANNELS } from '@api-platform/core';
+import { IPC_CHANNELS } from '@everest/core';
 
 // Map of running collections
 const runners = new Map<string, CollectionRunner>();

@@ -1,6 +1,6 @@
 import { ipcMain, BrowserWindow } from 'electron';
-import { IPC_CHANNELS } from '@api-platform/core';
-import { MockServerConfig, MockRoute } from '@api-platform/core';
+import { IPC_CHANNELS } from '@everest/core';
+import { MockServerConfig, MockRoute } from '@everest/core';
 import { mockStart, mockStop, getStatus, getRoutes, setRoutes } from '../services/mock-service';
 
 export function registerMockHandlers(): void {

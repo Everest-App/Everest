@@ -1,4 +1,4 @@
-import { RequestConfig, ResponseData } from '@api-platform/core';
+import { RequestConfig, ResponseData } from '@everest/core';
 import { RequestExecutor } from '../runtime/request-executor';
 
 // Single shared executor so we can abort the in-flight request

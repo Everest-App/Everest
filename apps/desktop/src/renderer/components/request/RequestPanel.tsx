@@ -8,7 +8,7 @@ import { AuthEditor } from './AuthEditor';
 import { CodeGenModal } from '../codegen/CodeGenModal';
 import { ScriptEditor } from '../scripts/ScriptEditor';
 import { ImportCurlModal } from '../import-curl/ImportCurlModal';
-import { useTabStore } from '../../store/tab-store';
+import { useTabStore, useActiveTab } from '../../store/tab-store';
 import { appEvents, NAVIGATE_TO_VARIABLE } from '../../utils/event-bus';
 
 type ConfigTab = 'params' | 'headers' | 'body' | 'auth' | 'pre-request' | 'tests';
@@ -19,9 +19,8 @@ export function RequestPanel() {
     const [codeGenOpen, setCodeGenOpen] = useState(false);
     const [curlImportOpen, setCurlImportOpen] = useState(false);
     const [curlInitialValue, setCurlInitialValue] = useState<string | undefined>();
-    const { tabs, activeTabId, updatePreRequestScript, updateTestScript } = useTabStore();
-
-    const activeTab = tabs.find((t) => t.id === activeTabId);
+    const { updatePreRequestScript, updateTestScript } = useTabStore();
+    const activeTab = useActiveTab();
     if (!activeTab) return null;
 
     const { request } = activeTab;

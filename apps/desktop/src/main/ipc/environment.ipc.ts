@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
-import { IPC_CHANNELS } from '@api-platform/core';
-import { Environment, Variable } from '@api-platform/core';
+import { IPC_CHANNELS } from '@everest/core';
+import { Environment, Variable } from '@everest/core';
 import {
     getAllEnvironments,
     createEnvironment,

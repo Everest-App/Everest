@@ -5,7 +5,7 @@
 - **Project name:** Everest
 - **Product type:** Desktop application — API testing and development platform
 - **One-sentence description:** A local-first, offline-capable desktop platform for testing and managing HTTP, GraphQL, WebSocket, and SSE APIs.
-- **Internal monorepo name:** `api-platform-monorepo`
+- **Internal monorepo name:** `everest-monorepo`
 - **Current version:** 2.2.1
 - **Development status:** Active development (roadmap features pending)
 

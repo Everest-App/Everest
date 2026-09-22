@@ -1,8 +1,8 @@
 import WebSocket from 'ws';
 import { BrowserWindow } from 'electron';
 import { randomUUID as uuidv4 } from 'crypto';
-import { WebSocketConfig, WebSocketMessage } from '@api-platform/core';
-import { IPC_CHANNELS } from '@api-platform/core';
+import { WebSocketConfig, WebSocketMessage } from '@everest/core';
+import { IPC_CHANNELS } from '@everest/core';
 
 let activeSocket: WebSocket | null = null;
 let senderWindow: BrowserWindow | null = null;

@@ -43,7 +43,7 @@ The desktop app is divided into three Electron layers (main, preload, renderer),
 ## Core Packages
 | Package | Location | Responsibility | Status |
 |---|---|---|---|
-| `@api-platform/core` | `packages/core/src/` | Shared TypeScript types, IPC channel constants, shared utilities | Active |
+| `@everest/core` | `packages/core/src/` | Shared TypeScript types, IPC channel constants, shared utilities | Active |
 | Core Types | `packages/core/src/types.ts` | All domain types: `RequestConfig`, `Collection`, `Environment`, `RunnerConfig`, etc. | Active |
 | Core Constants | `packages/core/src/constants.ts` | IPC channel name constants (`IPC_CHANNELS`) | Active |
 | Core Utils | `packages/core/src/utils/` | `interpolation.ts`, `variable-resolver.ts`, `csv-parser.ts`, `script-utils.ts` | Active |
@@ -115,7 +115,7 @@ IPC Handlers (main/ipc/)
   |                   |
   |                   +---> WebSocket / SSE Services
   |
-  +---> @api-platform/core (shared types + IPC constants)
+  +---> @everest/core (shared types + IPC constants)
 ```
 ---
 ## Unknown / Needs Investigation

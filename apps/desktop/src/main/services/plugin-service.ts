@@ -9,7 +9,7 @@ import {
     PluginHookResult,
     RequestConfig,
     ResponseData,
-} from '@api-platform/core';
+} from '@everest/core';
 
 const PLUGINS_DIR = path.join(app.getPath('userData'), 'plugins');
 
@@ -194,7 +194,7 @@ export function getPluginCatalog(): PluginManifest[] {
             name: 'Timestamp Header',
             version: '1.0.0',
             description: 'Automatically adds an X-Timestamp header with the current UTC time to every request.',
-            author: 'API Platform',
+            author: 'Everest',
             category: 'utility',
             hooks: ['pre-request'],
             settings: [
@@ -207,7 +207,7 @@ export function getPluginCatalog(): PluginManifest[] {
             name: 'Response Time Guard',
             version: '1.0.0',
             description: 'Warns in the console if response time exceeds a threshold.',
-            author: 'API Platform',
+            author: 'Everest',
             category: 'testing',
             hooks: ['post-response'],
             settings: [
@@ -219,7 +219,7 @@ export function getPluginCatalog(): PluginManifest[] {
             name: 'JSON Body Formatter',
             version: '1.0.0',
             description: 'Automatically formats/prettifies JSON request bodies before sending.',
-            author: 'API Platform',
+            author: 'Everest',
             category: 'transform',
             hooks: ['request-transform'],
         },
@@ -228,7 +228,7 @@ export function getPluginCatalog(): PluginManifest[] {
             name: 'Auto Auth Header',
             version: '1.0.0',
             description: 'Adds a configurable Authorization header to every request.',
-            author: 'API Platform',
+            author: 'Everest',
             category: 'auth',
             hooks: ['pre-request'],
             settings: [
@@ -241,7 +241,7 @@ export function getPluginCatalog(): PluginManifest[] {
             name: 'Correlation ID',
             version: '1.0.0',
             description: 'Adds a unique X-Correlation-ID header to every request for tracing.',
-            author: 'API Platform',
+            author: 'Everest',
             category: 'utility',
             hooks: ['pre-request'],
         },
@@ -250,7 +250,7 @@ export function getPluginCatalog(): PluginManifest[] {
             name: 'Response Size Monitor',
             version: '1.0.0',
             description: 'Logs a warning when response body exceeds a configurable size limit.',
-            author: 'API Platform',
+            author: 'Everest',
             category: 'testing',
             hooks: ['post-response'],
             settings: [

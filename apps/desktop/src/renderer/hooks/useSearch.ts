@@ -2,7 +2,7 @@
  * Search hooks with debounce and memoization.
  */
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
-import { Collection, Variable } from '@api-platform/core';
+import { Collection, Variable } from '@everest/core';
 import {
     searchCollections,
     searchVariables,

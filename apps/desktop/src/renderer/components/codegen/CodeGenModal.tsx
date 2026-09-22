@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTabStore } from '../../store/tab-store';
 import { useEnvironmentStore } from '../../store/environment-store';
-import { CODEGEN_TARGETS } from '@api-platform/core';
-import { CodeGenTarget } from '@api-platform/core';
-import { interpolateRequestConfig } from '@api-platform/core';
+import { CODEGEN_TARGETS } from '@everest/core';
+import { CodeGenTarget } from '@everest/core';
+import { interpolateRequestConfig } from '@everest/core';
 
 interface CodeGenModalProps {
     onClose: () => void;

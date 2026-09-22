@@ -1,8 +1,8 @@
 import http from 'http';
 import { BrowserWindow } from 'electron';
 import { randomUUID as uuidv4 } from 'crypto';
-import { MockRoute, MockServerConfig, MockServerStatus, MockRequestLog } from '@api-platform/core';
-import { IPC_CHANNELS } from '@api-platform/core';
+import { MockRoute, MockServerConfig, MockServerStatus, MockRequestLog } from '@everest/core';
+import { IPC_CHANNELS } from '@everest/core';
 
 let server: http.Server | null = null;
 let senderWindow: BrowserWindow | null = null;

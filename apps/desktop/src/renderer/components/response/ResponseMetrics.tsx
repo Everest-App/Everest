@@ -1,5 +1,5 @@
 import React from 'react';
-import { ResponseData } from '@api-platform/core';
+import { ResponseData } from '@everest/core';
 
 interface ResponseMetricsProps {
     response: ResponseData;

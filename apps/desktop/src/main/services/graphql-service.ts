@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { GraphQLRequest, GraphQLResponse, GraphQLIntrospection, GraphQLSchemaField, KeyValuePair } from '@api-platform/core';
+import { GraphQLRequest, GraphQLResponse, GraphQLIntrospection, GraphQLSchemaField, KeyValuePair } from '@everest/core';
 
 const INTROSPECTION_QUERY = `
 query IntrospectionQuery {

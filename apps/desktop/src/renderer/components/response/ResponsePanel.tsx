@@ -4,7 +4,7 @@ import { ResponseBody } from './ResponseBody';
 import { ResponseHeaders } from './ResponseHeaders';
 import { ResponseMetrics } from './ResponseMetrics';
 import { TestResultsPanel, ConsoleOutputPanel } from '../scripts/TestResultsPanel';
-import { useTabStore } from '../../store/tab-store';
+import { useTabStore, useActiveTab } from '../../store/tab-store';
 import { SFIcon } from '../common/SFIcon';
 
 type ResponseTab = 'body' | 'headers' | 'test-results' | 'console';
@@ -13,9 +13,8 @@ export function ResponsePanel() {
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState<ResponseTab>('body');
     const [copied, setCopied] = useState(false);
-    const { tabs, activeTabId } = useTabStore();
 
-    const tab = tabs.find((t) => t.id === activeTabId);
+    const tab = useActiveTab();
     if (!tab) return null;
 
     const { response, loading, scriptResults } = tab;

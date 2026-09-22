@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Environment, Variable } from '@api-platform/core';
+import { Environment, Variable } from '@everest/core';
 
 interface EnvironmentStore {
     environments: Environment[];

@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
-import { IPC_CHANNELS } from '@api-platform/core';
-import { RequestConfig, CodeGenTarget } from '@api-platform/core';
+import { IPC_CHANNELS } from '@everest/core';
+import { RequestConfig, CodeGenTarget } from '@everest/core';
 import { generateCode } from '../services/codegen-service';
 
 export function registerCodegenHandlers(): void {

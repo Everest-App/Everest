@@ -125,3 +125,10 @@ dist
 release/
 apps/desktop/dist/
 packages/*/dist/
+.ai/00_PROJECT.md
+.ai/02_ARCHITECTURE.md
+.ai/03_MODULES.md
+.ai/04_CONTEXT.md
+.ai/05_TASKS.md
+.ai/06_DECISIONS.md
+.ai/07_HANDOFF.md

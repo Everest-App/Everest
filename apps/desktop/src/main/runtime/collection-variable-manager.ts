@@ -1,6 +1,6 @@
 import { getAllCollections } from '../services/collection-service';
 import { getDb, markDirty } from '../storage/database';
-import { Variable } from '@api-platform/core';
+import { Variable } from '@everest/core';
 
 export class CollectionVariableManager {
     private collectionId: string;

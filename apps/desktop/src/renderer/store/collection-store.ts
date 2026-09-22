@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Collection, CollectionItem } from '@api-platform/core';
+import { Collection, CollectionItem } from '@everest/core';
 
 interface CollectionStore {
     collections: Collection[];

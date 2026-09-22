@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { WebSocketMessage } from '@api-platform/core';
+import { WebSocketMessage } from '@everest/core';
 import { SFIcon } from '../common/SFIcon';
 
 export function WebSocketPanel() {

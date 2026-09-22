@@ -2,7 +2,7 @@
  * Search utilities for collections and environments.
  * All search functions are pure and designed for memoization.
  */
-import { Collection, CollectionItem, Variable } from '@api-platform/core';
+import { Collection, CollectionItem, Variable } from '@everest/core';
 
 // ─── Match Metadata ──────────────────────────────────────────────
 export interface TextSegment {

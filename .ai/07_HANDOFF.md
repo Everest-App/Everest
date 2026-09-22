@@ -105,7 +105,7 @@ No source code was modified.
 - **Migration files must be copied to `dist/`** — handled by `build:copy-assets` script; skipping it breaks DB initialization
 - **No test suite exists** — do not reference or invoke a test runner
 - **Mock server and plugin system are partially implemented** — do not assume they are production-ready
-- **Data migration from `api-platform-desktop` → Everest** is handled in `main.ts` on first launch
+- **Data migration from `everest-desktop` → Everest** is handled in `main.ts` on first launch
 
 **Things to avoid:**
 
@@ -127,4 +127,4 @@ Inspect `apps/desktop/src/renderer/styles/` and `apps/desktop/src/main/types/` t
 - Source analyzed during this session: `README.md`, `package.json` (root + desktop), `main.ts`, `preload.ts`, `database.ts`, `vite.config.mts`, all `ipc/`, `services/`, `runtime/`, `storage/`, `renderer/components/`, `renderer/store/`, `packages/core/src/` directory listings
 - Git history has only 2 commits — project was imported as a bulk initial commit; no granular commit history available
 - No CI/CD workflows exist in `.github/workflows/` (directory is empty)
-- Internal monorepo package name is `api-platform-monorepo`; product name is `Everest`
+- Internal monorepo package name is `everest-monorepo`; product name is `Everest`

@@ -30,7 +30,7 @@
 - **Decision:** TypeScript 6.x across `apps/desktop` (main + renderer) and `packages/core`.
 - **Alternatives Considered:** JavaScript only
 - **Consequences:**
-  - (+) Shared types between main and renderer via `@api-platform/core`
+  - (+) Shared types between main and renderer via `@everest/core`
   - (+) Compile-time safety on IPC call signatures
   - (-) Two separate `tsconfig` files required (main and renderer have different targets/module systems)
 
@@ -45,7 +45,7 @@
 - **Alternatives Considered:** Turborepo, Nx, Lerna, yarn workspaces
 - **Consequences:**
   - (+) Zero extra tooling dependencies
-  - (+) `@api-platform/core` resolved via symlink at `"*"` version
+  - (+) `@everest/core` resolved via symlink at `"*"` version
   - (-) No incremental build caching (each build rebuilds everything)
   - (-) `packages/core` must be built before `apps/desktop` in CI
 
@@ -102,7 +102,7 @@
 - **Status:** Accepted
 - **Date:** Unknown
 - **Context:** `contextBridge` is the secure method for exposing main process capabilities to renderer. A typed `ElectronAPI` interface ensures compile-time safety on both sides.
-- **Decision:** Single `preload.ts` exposes `window.api` via `contextBridge`. All exposed methods are typed against `ElectronAPI` from `@api-platform/core`.
+- **Decision:** Single `preload.ts` exposes `window.api` via `contextBridge`. All exposed methods are typed against `ElectronAPI` from `@everest/core`.
 - **Alternatives Considered:** Direct `ipcRenderer` access in renderer (requires `nodeIntegration: true`)
 - **Consequences:**
   - (+) Renderer has a clear, typed, auditable API contract
@@ -115,7 +115,7 @@
 
 - **Status:** Accepted
 - **Date:** Unknown
-- **Context:** Hardcoded string channel names would create silent runtime bugs when mismatched between main and renderer. Centralizing them in `@api-platform/core` makes mismatches a compile error.
+- **Context:** Hardcoded string channel names would create silent runtime bugs when mismatched between main and renderer. Centralizing them in `@everest/core` makes mismatches a compile error.
 - **Decision:** All IPC channel names defined in `packages/core/src/constants.ts` as `IPC_CHANNELS` object. Both preload and IPC handlers import from this source.
 - **Alternatives Considered:** Hardcoded strings per file, enums in `apps/desktop`
 - **Consequences:**
@@ -266,7 +266,7 @@
 
 - **Status:** Accepted
 - **Date:** Unknown
-- **Context:** The application was previously distributed under the name `api-platform-desktop` / `API Platform`. Users upgrading would lose their data without a migration path.
+- **Context:** The application was previously distributed under the name `everest-desktop` / `Everest`. Users upgrading would lose their data without a migration path.
 - **Decision:** On first launch, `main.ts` checks for data in known previous `userData` paths and copies it to the new Everest `userData` location. A `.migrated` flag prevents re-running.
 - **Consequences:**
   - (+) Seamless upgrade for existing users

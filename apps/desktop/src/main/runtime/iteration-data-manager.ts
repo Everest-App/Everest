@@ -1,4 +1,4 @@
-import { parseCsv } from '@api-platform/core';
+import { parseCsv } from '@everest/core';
 import * as fs from 'fs';
 
 export class IterationDataManager {

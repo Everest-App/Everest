@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { RequestConfig, ResponseData, CookieJar } from '@api-platform/core';
+import { RequestConfig, ResponseData, CookieJar } from '@everest/core';
 import { buildFinalUrl } from '../utils/url-builder';
 import * as http from 'http';
 import * as https from 'https';

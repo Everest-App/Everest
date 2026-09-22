@@ -1,5 +1,5 @@
 import { getAllEnvironments, updateEnvironment } from '../services/environment-service';
-import { Variable } from '@api-platform/core';
+import { Variable } from '@everest/core';
 
 export class EnvironmentManager {
     private envId: string | null;

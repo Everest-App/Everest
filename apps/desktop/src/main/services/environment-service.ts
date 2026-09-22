@@ -1,6 +1,6 @@
 import { randomUUID as uuidv4 } from 'crypto';
 import { getDb, markDirty } from '../storage/database';
-import { Environment, Variable } from '@api-platform/core';
+import { Environment, Variable } from '@everest/core';
 
 // ─── Environments CRUD ───────────────────────────────────────────
 

@@ -28,7 +28,7 @@ function assert(condition: boolean, msg: string) {
 // ── Imports ──────────────────────────────────────────────────────
 import { parseCurl } from './curl-parser';
 import { normalizeRequestParams, parseUrlParams } from './url-params-sync';
-import { RequestConfig } from '@api-platform/core';
+import { RequestConfig } from '@everest/core';
 import { v4 as uuidv4 } from 'uuid';
 
 function makeConfig(overrides: Partial<RequestConfig> = {}): RequestConfig {

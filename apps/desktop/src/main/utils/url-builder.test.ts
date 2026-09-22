@@ -45,7 +45,7 @@ function expect(actual: string) {
 
 // ── Import the module under test ─────────────────────────────────
 import { buildFinalUrl } from './url-builder';
-import { RequestConfig } from '@api-platform/core';
+import { RequestConfig } from '@everest/core';
 
 function makeConfig(overrides: Partial<RequestConfig> = {}): RequestConfig {
     return {

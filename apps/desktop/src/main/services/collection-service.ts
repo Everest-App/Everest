@@ -1,16 +1,41 @@
 import { randomUUID as uuidv4 } from 'crypto';
 import { getDb, markDirty, saveDatabase } from '../storage/database';
-import { Collection, CollectionItem, RequestConfig, Variable } from '@api-platform/core';
+import { Collection, CollectionItem, RequestConfig, Variable } from '@everest/core';
 
 // ─── Collections CRUD ────────────────────────────────────────────
 
 export function getAllCollections(): Collection[] {
     const db = getDb();
-    const result = db.exec('SELECT id, name, description, variables_json, created_at, updated_at, pre_request_script, test_script FROM collections ORDER BY name');
+    const colResult = db.exec('SELECT id, name, description, variables_json, created_at, updated_at, pre_request_script, test_script FROM collections ORDER BY name');
 
-    if (result.length === 0) return [];
+    if (colResult.length === 0) return [];
 
-    return result[0].values.map((row: any[]) => {
+    // Single query for ALL items across all collections (eliminates N+1)
+    const itemResult = db.exec(
+        'SELECT id, collection_id, parent_id, name, type, sort_order, request_json, pre_request_script, test_script FROM collection_items ORDER BY sort_order'
+    );
+
+    // Group items by collection_id in memory
+    const itemsByCollection = new Map<string, CollectionItem[]>();
+    if (itemResult.length > 0) {
+        for (const row of itemResult[0].values) {
+            const colId = row[1] as string;
+            if (!itemsByCollection.has(colId)) itemsByCollection.set(colId, []);
+            itemsByCollection.get(colId)!.push({
+                id: row[0] as string,
+                collectionId: colId,
+                parentId: row[2] as string | null,
+                name: row[3] as string,
+                type: row[4] as 'folder' | 'request',
+                sortOrder: row[5] as number,
+                request: row[6] ? JSON.parse(row[6] as string) : undefined,
+                preRequestScript: (row[7] as string) || '',
+                testScript: (row[8] as string) || '',
+            });
+        }
+    }
+
+    return colResult[0].values.map((row: any[]) => {
         const collectionId = row[0] as string;
         return {
             id: collectionId,
@@ -21,7 +46,7 @@ export function getAllCollections(): Collection[] {
             updatedAt: row[5] as number,
             preRequestScript: (row[6] as string) || '',
             testScript: (row[7] as string) || '',
-            items: getCollectionItems(collectionId),
+            items: buildItemTree(itemsByCollection.get(collectionId) || []),
         };
     });
 }
@@ -258,18 +283,25 @@ export function reorderCollectionItems(items: Array<{ id: string; sortOrder: num
     const db = getDb();
     let collectionId: string | null = null;
 
-    for (const item of items) {
-        db.run('UPDATE collection_items SET sort_order = ? WHERE id = ?', [item.sortOrder, item.id]);
-        if (!collectionId) {
-            const res = db.exec('SELECT collection_id FROM collection_items WHERE id = ?', [item.id]);
-            if (res.length > 0 && res[0].values.length > 0) {
-                collectionId = res[0].values[0][0] as string;
+    db.run('BEGIN TRANSACTION');
+    try {
+        for (const item of items) {
+            db.run('UPDATE collection_items SET sort_order = ? WHERE id = ?', [item.sortOrder, item.id]);
+            if (!collectionId) {
+                const res = db.exec('SELECT collection_id FROM collection_items WHERE id = ?', [item.id]);
+                if (res.length > 0 && res[0].values.length > 0) {
+                    collectionId = res[0].values[0][0] as string;
+                }
             }
         }
-    }
 
-    if (collectionId) {
-        db.run('UPDATE collections SET updated_at = ? WHERE id = ?', [Date.now(), collectionId]);
+        if (collectionId) {
+            db.run('UPDATE collections SET updated_at = ? WHERE id = ?', [Date.now(), collectionId]);
+        }
+        db.run('COMMIT');
+    } catch (e) {
+        db.run('ROLLBACK');
+        throw e;
     }
     markDirty();
 }

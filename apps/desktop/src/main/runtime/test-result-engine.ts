@@ -3,7 +3,7 @@ import {
     RuntimeRunnerItemResult,
     CollectionItem,
     ScriptLevel
-} from '@api-platform/core';
+} from '@everest/core';
 
 export interface RecordedAssertion extends RuntimeTestAssertion {
     level: ScriptLevel;

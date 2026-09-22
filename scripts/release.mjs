@@ -279,9 +279,9 @@ async function main() {
     log('Running npm pack --dry-run to verify contents...');
     run('npm pack --dry-run -w packages/core');
 
-    log('Publishing @api-platform/core...');
+    log('Publishing @everest/core...');
     run('npm publish --access public -w packages/core');
-    success(`@api-platform/core@${newVersion} published`);
+    success(`@everest/core@${newVersion} published`);
   } else {
     warn('Skipping npm publish — not logged in. Run manually:');
     console.log(`  ${COLORS.dim}npm publish --access public -w packages/core${COLORS.reset}`);

@@ -4,7 +4,7 @@ import {
     RunReport, 
     ReportFormat,
     RunReportItem
-} from '@api-platform/core';
+} from '@everest/core';
 
 export class ReportGenerator {
     public generate(

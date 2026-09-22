@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
-import { IPC_CHANNELS } from '@api-platform/core';
-import { CollectionItem } from '@api-platform/core';
+import { IPC_CHANNELS } from '@everest/core';
+import { CollectionItem } from '@everest/core';
 import {
     getAllCollections,
     createCollection,

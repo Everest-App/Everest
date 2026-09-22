@@ -5,7 +5,7 @@ import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { SaveToFolderModal } from './components/collections/SaveToFolderModal';
 import { useTabStore } from './store/tab-store';
 import { AboutDialog } from './components/common/AboutDialog';
-import { DEFAULT_HTTP_METHOD, DEFAULT_BODY_TYPE, DEFAULT_AUTH_TYPE } from '@api-platform/core';
+import { DEFAULT_HTTP_METHOD, DEFAULT_BODY_TYPE, DEFAULT_AUTH_TYPE } from '@everest/core';
 
 export default function App() {
     const { theme, setTheme } = useThemeStore();

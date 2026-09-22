@@ -1,4 +1,4 @@
-import { ConsoleEntry } from '@api-platform/core';
+import { ConsoleEntry } from '@everest/core';
 
 export class ConsoleCapture {
     private entries: ConsoleEntry[] = [];

@@ -8,7 +8,7 @@ import {
     RuntimeRunnerItemResult,
     CookieJar,
     Cookie
-} from '@api-platform/core';
+} from '@everest/core';
 import { RuntimeEngine, ExecutionOptions } from './runtime-engine';
 import { RequestExecutor } from './request-executor';
 import { RuntimeVariableResolver } from './variable-resolver';

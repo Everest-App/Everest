@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { SSEEvent } from '@api-platform/core';
+import { SSEEvent } from '@everest/core';
 import { SFIcon } from '../common/SFIcon';
 
 export function SSEPanel() {

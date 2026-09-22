@@ -2,8 +2,8 @@ import { BrowserWindow } from 'electron';
 import { randomUUID as uuidv4 } from 'crypto';
 import http from 'http';
 import https from 'https';
-import { SSEConfig, SSEEvent } from '@api-platform/core';
-import { IPC_CHANNELS } from '@api-platform/core';
+import { SSEConfig, SSEEvent } from '@everest/core';
+import { IPC_CHANNELS } from '@everest/core';
 
 let activeRequest: http.ClientRequest | null = null;
 let senderWindow: BrowserWindow | null = null;

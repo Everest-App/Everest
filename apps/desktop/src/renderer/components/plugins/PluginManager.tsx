@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { SFIcon } from '../common/SFIcon';
-import { PluginInfo, PluginManifest, PluginSetting } from '@api-platform/core';
+import { PluginInfo, PluginManifest, PluginSetting } from '@everest/core';
 
 export function PluginManager({ onClose }: { onClose: () => void }) {
     const [installedPlugins, setInstalledPlugins] = useState<PluginInfo[]>([]);

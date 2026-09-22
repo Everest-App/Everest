@@ -193,10 +193,10 @@
 
 ---
 
-### Data Migration (api-platform → Everest)
+### Data Migration (everest → Everest)
 
 - **Status:** Complete
-- **Implemented:** Automatic migration of user data from previous `api-platform-desktop` app name on first launch
+- **Implemented:** Automatic migration of user data from previous `everest-desktop` app name on first launch
 - **Related Files:** `apps/desktop/src/main/main.ts` (migration block)
 
 ---

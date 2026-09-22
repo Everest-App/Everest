@@ -1,6 +1,6 @@
 import { randomUUID as uuidv4 } from 'crypto';
 import { getDb, markDirty } from '../storage/database';
-import { HistoryEntry, RequestConfig, ResponseData } from '@api-platform/core';
+import { HistoryEntry, RequestConfig, ResponseData } from '@everest/core';
 
 // Maximum number of history entries to retain in the database.
 // Each entry contains full request+response JSON, so this prevents unbounded DB growth.

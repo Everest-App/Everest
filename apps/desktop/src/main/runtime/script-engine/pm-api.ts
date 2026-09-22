@@ -2,8 +2,8 @@ import {
     RuntimeScriptContext, 
     RuntimeTestAssertion, 
     VariableScopeMap 
-} from '@api-platform/core';
-import { VariableResolver } from '@api-platform/core';
+} from '@everest/core';
+import { VariableResolver } from '@everest/core';
 import { createExpectChain } from './expect-chain';
 
 export class PmApiBuilder {

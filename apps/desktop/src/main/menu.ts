@@ -1,5 +1,5 @@
 import { app, Menu, MenuItemConstructorOptions, shell, BrowserWindow } from 'electron';
-import { IPC_CHANNELS } from '@api-platform/core';
+import { IPC_CHANNELS } from '@everest/core';
 
 const isMac = process.platform === 'darwin';
 
@@ -112,13 +112,13 @@ export function createAppMenu(mainWindow: BrowserWindow): Menu {
         {
             label: 'Help',
             submenu: [
-                { label: 'Documentation', click: () => shell.openExternal('https://github.com/api-platform') },
+                { label: 'Documentation', click: () => shell.openExternal('https://github.com/everest') },
                 { label: 'Keyboard Shortcuts', click: () => sendAction('show-shortcuts') },
                 { type: 'separator' },
-                { label: 'Release Notes', click: () => shell.openExternal('https://github.com/api-platform/releases') },
+                { label: 'Release Notes', click: () => shell.openExternal('https://github.com/everest/releases') },
                 { label: 'Check for Updates', click: () => sendAction('check-updates') },
-                { label: 'GitHub Repository', click: () => shell.openExternal('https://github.com/api-platform') },
-                { label: 'Report Issue', click: () => shell.openExternal('https://github.com/api-platform/issues') },
+                { label: 'GitHub Repository', click: () => shell.openExternal('https://github.com/everest') },
+                { label: 'Report Issue', click: () => shell.openExternal('https://github.com/everest/issues') },
                 ...(!isMac
                     ? [
                         { type: 'separator' },

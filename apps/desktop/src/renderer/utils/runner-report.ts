@@ -1,4 +1,4 @@
-import { RunnerResult } from '@api-platform/core';
+import { RunnerResult } from '@everest/core';
 
 /**
  * Generate a structured JSON report from runner results.

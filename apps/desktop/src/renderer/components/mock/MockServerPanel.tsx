@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../../i18n/useTranslation';
-import { MockRoute, MockServerStatus, MockRequestLog } from '@api-platform/core';
+import { MockRoute, MockServerStatus, MockRequestLog } from '@everest/core';
 import { SFIcon } from '../common/SFIcon';
 import { v4 as uuidv4 } from 'uuid';
 

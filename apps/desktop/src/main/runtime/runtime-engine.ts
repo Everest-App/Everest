@@ -6,7 +6,7 @@ import {
     CookieJar,
     ScriptPhase,
     ScriptLevel
-} from '@api-platform/core';
+} from '@everest/core';
 import { ScriptSandbox } from './script-engine/sandbox';
 import { createSendRequestHandler } from './script-engine/send-request';
 import { RequestExecutor } from './request-executor';

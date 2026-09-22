@@ -1,4 +1,4 @@
-// ─── @api-platform/core ──────────────────────────────────────────
+// ─── @everest/core ──────────────────────────────────────────
 // Barrel export — all public types, constants, and utilities
 
 // ── Types ────────────────────────────────────────────────────────

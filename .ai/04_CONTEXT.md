@@ -48,14 +48,14 @@
 - **Type:** Multi-process Electron app inside an npm monorepo
 - **Monorepo workspaces:**
   - `apps/desktop` — Electron app (main + preload + renderer)
-  - `packages/core` — shared types, IPC constants, utilities (`@api-platform/core`)
+  - `packages/core` — shared types, IPC constants, utilities (`@everest/core`)
 - **Key layers:**
   - **Renderer** — React UI + Zustand state, no direct Node.js access
   - **Preload** — `contextBridge` exposes typed `window.api` surface
   - **Main** — all business logic: IPC routing → services → runtime engine → sql.js DB
 - **Security model:** `contextIsolation: true`, `nodeIntegration: false`
-- **Storage:** In-memory sql.js DB, auto-saved to `<userData>/data/api-platform.db` every 30s
-- **IPC pattern:** All channel names are constants in `@api-platform/core`
+- **Storage:** In-memory sql.js DB, auto-saved to `<userData>/data/everest.db` every 30s
+- **IPC pattern:** All channel names are constants in `@everest/core`
 
 ---
 
@@ -71,11 +71,11 @@
 
 - **No native Node addons:** sql.js chosen specifically to avoid native compilation (cross-platform safety)
 - **Renderer is sandboxed:** No Node.js or Electron APIs in renderer — all calls go through `window.api`
-- **All IPC channels must use constants from `@api-platform/core`** — do not hardcode channel name strings
+- **All IPC channels must use constants from `@everest/core`** — do not hardcode channel name strings
 - **Do not modify `packages/core` types without understanding renderer + main consumers** — types are shared across both processes
 - **Main process handles all I/O** — file system and network access must never move to renderer
 - **DB write is synchronous** (`fs.writeFileSync`) — avoid calling `saveDatabase()` in hot paths
-- **Monorepo dependency:** `@api-platform/core` is a workspace package (`"*"`) — it must be built before `apps/desktop` in CI
+- **Monorepo dependency:** `@everest/core` is a workspace package (`"*"`) — it must be built before `apps/desktop` in CI
 
 ---
 

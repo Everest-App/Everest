@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScriptResult } from '@api-platform/core';
+import { ScriptResult } from '@everest/core';
 import { SFIcon } from '../common/SFIcon';
 
 interface TestResultsPanelProps {
